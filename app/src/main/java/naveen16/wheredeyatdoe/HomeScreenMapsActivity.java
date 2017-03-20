@@ -1,7 +1,7 @@
 package naveen16.wheredeyatdoe;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -39,8 +39,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng austin = new LatLng(30,-97);
+        mMap.addMarker(new MarkerOptions().position(austin).title("Marker in Austin"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(austin));
     }
 }
