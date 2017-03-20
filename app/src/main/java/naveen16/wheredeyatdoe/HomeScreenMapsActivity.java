@@ -1,5 +1,6 @@
 package naveen16.wheredeyatdoe;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -8,11 +9,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class HomeScreenMapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class HomeScreenMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
+
+    private Marker myMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +40,26 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        googleMap.setOnMarkerClickListener(this);
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng austin = new LatLng(30,-97);
-        mMap.addMarker(new MarkerOptions().position(austin).title("Marker in Austin"));
+        LatLng austin = new LatLng(30.2849,-97.7355);
+        myMarker = mMap.addMarker(new MarkerOptions().position(austin).title("The UT Tower"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(austin));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(austin, 17));
+
+    }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+
+        if (marker.equals(myMarker))
+        {
+            //handle click here
+            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
+            startActivity(intent);
+        }
+        return true;
     }
 }
