@@ -22,7 +22,10 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
     private GoogleMap mMap;
 
-    private Marker myMarker;
+    private Marker claMarker;
+    private Marker gregoryMarker;
+    private Marker pclMarker;
+    private Marker sacMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +53,22 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng austin = new LatLng(30.2672,-97.7431);
-        myMarker = mMap.addMarker(new MarkerOptions().position(austin).title("The UT Tower"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(austin));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(austin, 17));
+        LatLng cla = new LatLng(30.2849,-97.7355);
+        claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
+
+        //adding a marker to gregory gym
+        LatLng gregoryGym = new LatLng(30.2842,-97.7365);
+        gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
+
+        //adding a marker to pcl library
+        LatLng pcl = new LatLng(30.2827, -97.7381);
+        pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
+
+        //adding a marker to SAC
+        LatLng sac = new LatLng(30.2849, -97.7360);
+        sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
 
     }
 
@@ -64,7 +79,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         Geocoder gc = new Geocoder(this);
         String name = "";
         try {
-            List<Address> addresses = gc.getFromLocation(myMarker.getPosition().latitude, myMarker.getPosition().longitude, 1);
+            List<Address> addresses = gc.getFromLocation(claMarker.getPosition().latitude, claMarker.getPosition().longitude, 1);
             for(int i = 0; i < addresses.size(); i++){
                 Log.d("ADDRESS",addresses.get(i).getFeatureName());
             }
@@ -76,12 +91,30 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
             e.printStackTrace();
         }
 
-        if (marker.equals(myMarker))
+        if (marker.equals(claMarker))
         {
             //handle click here
             Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
-            intent.putExtra("NAME",name);
+            intent.putExtra("NAME","College of Liberal Arts (CLA)");
             startActivity(intent);
+        }
+        else if(marker.equals(gregoryMarker)){
+            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
+            intent.putExtra("NAME","Gregory Gymnasium");
+            startActivity(intent);
+        }
+        else if(marker.equals(pclMarker)){
+            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
+            intent.putExtra("NAME","Perry Castaneda Library (PCL)");
+            startActivity(intent);
+        }
+        else if(marker.equals(sacMarker)){
+            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
+            intent.putExtra("NAME","Student Activity Center (SAC)");
+            startActivity(intent);
+        }
+        else{
+
         }
         return true;
     }
