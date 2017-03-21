@@ -14,9 +14,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +33,9 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
     private Marker gregoryMarker;
     private Marker pclMarker;
     private Marker sacMarker;
+
+    TileProvider mProvider;
+    TileOverlay mOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +79,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         //adding a marker to SAC
         LatLng sac = new LatLng(30.2849, -97.7360);
         sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
+
+        addHeatMap();
 
     }
 
@@ -156,6 +166,23 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         }
         return true;
     }
+
+    private void addHeatMap() {
+        List<LatLng> list = new ArrayList<LatLng>();
+        list.add(new LatLng(30.2849,-97.7355)); //cla
+        list.add(new LatLng(30.2842,-97.7365)); //greg
+        list.add(new LatLng(30.2827, -97.7381)); //pcl
+        list.add(new LatLng(30.2849, -97.7360)); //sac
+
+
+        // Create a heat map tile provider, passing it the latlngs of the police stations.
+        mProvider = new HeatmapTileProvider.Builder()
+                .data(list)
+                .build();
+        // Add a tile overlay to the map, using the heat map tile provider.
+        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+    }
+
 
     public String getDayoFWeek(){
         Date now = new Date();
