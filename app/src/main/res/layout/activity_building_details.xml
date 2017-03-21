@@ -16,7 +16,49 @@
         android:layout_height="wrap_content"
         android:height="50dp"
         android:gravity="center"
-        android:id="@+id/textView"
+        android:id="@+id/buildingName"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Todays Hours:  "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buildingName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="22dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="56dp"
+        android:id="@+id/hoursLabel" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/hoursLabel"
+        android:layout_alignLeft="@+id/hoursLabel"
+        android:layout_alignStart="@+id/hoursLabel"
+        android:layout_marginTop="47dp"
+        android:id="@+id/hoursValue"
+        android:text="6:00 AM - 10:00 PM" />
+
+    <TextView
+        android:text="Popularity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/hoursValue"
+        android:layout_alignLeft="@+id/hoursValue"
+        android:layout_alignStart="@+id/hoursValue"
+        android:layout_marginTop="76dp"
+        android:id="@+id/popularityLabel" />
+
+    <TextView
+        android:text="Very Crowded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/popularityLabel"
+        android:layout_alignLeft="@+id/popularityLabel"
+        android:layout_alignStart="@+id/popularityLabel"
+        android:layout_marginTop="57dp"
+        android:id="@+id/popularityValue" />
 
 </RelativeLayout>

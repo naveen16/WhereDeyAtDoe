@@ -13,7 +13,10 @@ public class BuildingDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_building_details);
         Intent intent = getIntent();
         String name = intent.getExtras().getString("NAME");
-        TextView buildingName = (TextView) findViewById(R.id.textView);
+        TextView buildingName = (TextView) findViewById(R.id.buildingName);
         buildingName.setText(name);
+        String hours = intent.getExtras().getString("HOURS");
+        TextView hoursText = (TextView) findViewById(R.id.hoursValue);
+        hoursText.setText(hours);
     }
 }

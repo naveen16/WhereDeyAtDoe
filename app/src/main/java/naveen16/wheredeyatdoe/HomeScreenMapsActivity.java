@@ -16,6 +16,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 public class HomeScreenMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -74,7 +76,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-
+        String day = getDayoFWeek();
 
         Geocoder gc = new Geocoder(this);
         String name = "";
@@ -93,29 +95,71 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
         if (marker.equals(claMarker))
         {
+            String hours = "";
+            if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
+                hours = "6:00AM - 11:00PM";
+            else
+                hours = "8:00AM - 10:00PM";
             //handle click here
             Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
             intent.putExtra("NAME","College of Liberal Arts (CLA)");
+            intent.putExtra("HOURS",hours);
             startActivity(intent);
         }
         else if(marker.equals(gregoryMarker)){
+            String hours = "";
+            if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
+                hours = "6:00AM - 1:00AM";
+            else if(day.equals("Friday"))
+                hours = "6:00AM - 10:00PM";
+            else if(day.equals("Saturday"))
+                hours = "8:00AM - 10:00PM";
+            else
+                hours = "10:00AM - 1:00AM";
             Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
             intent.putExtra("NAME","Gregory Gymnasium");
+            intent.putExtra("HOURS",hours);
             startActivity(intent);
         }
         else if(marker.equals(pclMarker)){
+            String hours = "";
+            if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
+                hours = "Open 24 hours";
+            else if(day.equals("Friday"))
+                hours = "12:00AM - 11:00PM";
+            else if(day.equals("Saturday"))
+                hours = "10:00AM - 11:00PM";
+            else
+                hours = "11:00AM - 12:00AM";
             Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
             intent.putExtra("NAME","Perry Castaneda Library (PCL)");
+            intent.putExtra("HOURS",hours);
             startActivity(intent);
         }
         else if(marker.equals(sacMarker)){
+            String hours = "";
+            if(day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
+                hours = "7:00AM - 5:00PM";
+            else if(day.equals("Monday"))
+                hours = "7:00AM - 12:00AM";
+            else if(day.equals("Saturday"))
+                hours = "10:00AM - 3:00AM";
+            else
+                hours = "12:00PM - 3:00AM";
             Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
             intent.putExtra("NAME","Student Activity Center (SAC)");
+            intent.putExtra("HOURS",hours);
             startActivity(intent);
         }
         else{
 
         }
         return true;
+    }
+
+    public String getDayoFWeek(){
+        Date now = new Date();
+        SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE"); // the day of the week abbreviated
+        return simpleDateformat.format(now);
     }
 }
