@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion 24
     buildToolsVersion "23.0.3"
@@ -29,3 +30,4 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.4+'
     testCompile 'junit:junit:4.12'
 }
+apply plugin: 'com.google.gms.google-services'

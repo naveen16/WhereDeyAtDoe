@@ -21,6 +21,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
@@ -28,7 +33,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HomeScreenMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -39,6 +46,11 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
     private Marker pclMarker;
     private Marker sacMarker;
 
+    private DatabaseReference mDatabase;
+
+    private Map<String,String> buildingsMap;
+    private Map<String,LatLng> buildingsLatLngs;
+
     TileProvider mProvider;
     TileOverlay mOverlay;
 
@@ -46,6 +58,9 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_maps);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        buildingsMap=new HashMap<String, String>();
+        buildingsLatLngs=new HashMap<String, LatLng>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -69,23 +84,53 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
         // Add a marker in Sydney and move the camera
         LatLng cla = new LatLng(30.2849,-97.7355);
+        buildingsLatLngs.put("College of Liberal Arts (CLA)",cla);
         claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
 
         //adding a marker to gregory gym
         LatLng gregoryGym = new LatLng(30.2842,-97.7365);
+        buildingsLatLngs.put("Gregory Gymnasium",gregoryGym);
         gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
 
         //adding a marker to pcl library
         LatLng pcl = new LatLng(30.2827, -97.7381);
+        buildingsLatLngs.put("Perry Castaneda Library (PCL)",pcl);
         pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
 
         //adding a marker to SAC
         LatLng sac = new LatLng(30.2849, -97.7360);
+        buildingsLatLngs.put("Student Activity Center (SAC)",sac);
         sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
 
-        addHeatMap();
+       mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.d("GREENYELLOW","Reached Green yellow color method");
+                // Get Post object and use the values to update the UI
+                //Post post = dataSnapshot.getValue(Post.class);
+                // ...
+                for( DataSnapshot child: dataSnapshot.getChildren()){
+                    String key=child.getKey();
+                    String value=(String)child.getValue();
+
+                    buildingsMap.put(key,value);
+                    Log.d("BUILDINGS MAP","buildings map: "+buildingsMap.toString());
+                }
+                addHeatMap();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        });
+        //mPostReference.addValueEventListener(postListener);
+
+        //addHeatMap();
 
     }
 
@@ -259,32 +304,65 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
 
     private void addHeatMap() {
-        List<LatLng> list = new ArrayList<LatLng>();
-        list.add(new LatLng(30.2849,-97.7355)); //cla
-        list.add(new LatLng(30.2842,-97.7365)); //greg
-        list.add(new LatLng(30.2827, -97.7381)); //pcl
-        list.add(new LatLng(30.2849, -97.7360)); //sac
+       // List<LatLng> list = new ArrayList<LatLng>();
+//        list.add(new LatLng(30.2849, -97.7355)); //cla
+//        list.add(new LatLng(30.2842, -97.7365)); //greg
+//        list.add(new LatLng(30.2827, -97.7381)); //pcl
+//        list.add(new LatLng(30.2849, -97.7360)); //sac
 
-
+        String crowdedLvl = buildingsMap.get("Student Activity Center (SAC)");
         int[] colors = {
                 Color.rgb(0, 255, 0), // green
                 Color.rgb(255, 255, 0),   // yellow
-                Color.rgb(255,0,0)  //red
+                Color.rgb(255, 0, 0)  //red
         };
+        for (String s : buildingsMap.keySet()) {
+            String value=buildingsMap.get(s);
+            float l1 = .1f;
+            float l2 = .2f;
+            float l3 = .3f;
+            if(value.equals("Not Crowded")){
+                l1=.1f;
+                l2=2f;
+                l3=3f;
+            }
+            else if(value.equals("Slightly Crowded")){
+                l1=.1f;
+                l2=.5f;
+                l3=3f;
+            }
+            else if(value.equals("Crowded")){
+                l1=.1f;
+                l2=.2f;
+                l3=3f;
+            }
+            else if(value.equals("Very Crowded")){
+                l1=.1f;
+                l2=.2f;
+                l3=1f;
+            }
+            else {
+                l1=.1f;
+                l2=.2f;
+                l3=.3f;
+            }
 
-        float[] startPoints = {
-                .1f, 2f, 3f
-        };
+            float[] startPoints = {
+                l1, l2, l3
+            };
 
+            List<LatLng> list = new ArrayList<LatLng>();
+            list.add(buildingsLatLngs.get(sa)); //cla
+            // Create a heat map tile provider, passing it the latlngs of the police stations.
 
-        // Create a heat map tile provider, passing it the latlngs of the police stations.
-        mProvider = new HeatmapTileProvider.Builder()
-                .data(list)
-                .radius(50)
-                .gradient(new Gradient(colors,startPoints))
-                .build();
-        // Add a tile overlay to the map, using the heat map tile provider.
-        mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+            mProvider = new HeatmapTileProvider.Builder()
+                    .data(list)
+                    .radius(50)
+                    .gradient(new Gradient(colors, startPoints))
+                    .build();
+            // Add a tile overlay to the map, using the heat map tile provider.
+            mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+        }
     }
 
 

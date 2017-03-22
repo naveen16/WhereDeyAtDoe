@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "721122157766",
+    "firebase_url": "https://wheredeyatdoe-89908.firebaseio.com",
+    "project_id": "wheredeyatdoe-89908",
+    "storage_bucket": "wheredeyatdoe-89908.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:721122157766:android:109cca6fe45d9182",
+        "android_client_info": {
+          "package_name": "naveen16.wheredeyatdoe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "721122157766-mm9eu79igosvepr9hvpuvfbcqietf0b2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxKVNwSkknJfZN6dMqbt1QXObAcLD7WgM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
