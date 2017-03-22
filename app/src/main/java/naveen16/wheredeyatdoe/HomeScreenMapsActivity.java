@@ -1,9 +1,11 @@
 package naveen16.wheredeyatdoe;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
@@ -17,6 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
+import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import java.io.IOException;
@@ -105,6 +108,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
         if (marker.equals(claMarker))
         {
+            DialogFragment df = new ReportDialogFragment();
+            df.show(getSupportFragmentManager(),"Option");
             String hours = "";
             if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
                 hours = "6:00AM - 11:00PM";
@@ -117,6 +122,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
             startActivity(intent);
         }
         else if(marker.equals(gregoryMarker)){
+            DialogFragment df = new ReportDialogFragment();
+            df.show(getSupportFragmentManager(),"Option");
             String hours = "";
             if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
                 hours = "6:00AM - 1:00AM";
@@ -129,9 +136,11 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
             Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
             intent.putExtra("NAME","Gregory Gymnasium");
             intent.putExtra("HOURS",hours);
-            startActivity(intent);
+            //startActivity(intent);
         }
         else if(marker.equals(pclMarker)){
+            DialogFragment df = new ReportDialogFragment();
+            df.show(getSupportFragmentManager(),"Option");
             String hours = "";
             if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
                 hours = "Open 24 hours";
@@ -147,6 +156,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
             startActivity(intent);
         }
         else if(marker.equals(sacMarker)){
+            DialogFragment df = new ReportDialogFragment();
+            df.show(getSupportFragmentManager(),"Option");
             String hours = "";
             if(day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
                 hours = "7:00AM - 5:00PM";
@@ -175,9 +186,22 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         list.add(new LatLng(30.2849, -97.7360)); //sac
 
 
+        int[] colors = {
+                Color.rgb(0, 255, 0), // green
+                Color.rgb(255, 255, 0),   // yellow
+                Color.rgb(255,0,0)  //red
+        };
+
+        float[] startPoints = {
+                .1f, 2f, 3f
+        };
+
+
         // Create a heat map tile provider, passing it the latlngs of the police stations.
         mProvider = new HeatmapTileProvider.Builder()
                 .data(list)
+                .radius(50)
+                .gradient(new Gradient(colors,startPoints))
                 .build();
         // Add a tile overlay to the map, using the heat map tile provider.
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
