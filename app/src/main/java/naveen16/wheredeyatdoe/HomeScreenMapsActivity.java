@@ -352,7 +352,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
             };
 
             List<LatLng> list = new ArrayList<LatLng>();
-            list.add(buildingsLatLngs.get(sa)); //cla
+            list.add(buildingsLatLngs.get(s)); //cla
             // Create a heat map tile provider, passing it the latlngs of the police stations.
 
             mProvider = new HeatmapTileProvider.Builder()
