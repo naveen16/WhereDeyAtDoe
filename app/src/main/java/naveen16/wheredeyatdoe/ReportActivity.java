@@ -26,7 +26,7 @@ public class ReportActivity extends AppCompatActivity {
                 R.array.Crowded_Options, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner
+// Apply the adapter to the spinner jjj
         spinner.setAdapter(adapter);
         spinner
                 .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -34,7 +34,7 @@ public class ReportActivity extends AppCompatActivity {
 
                     public void onItemSelected(AdapterView<?> arg0, View arg1,
                                                int pos, long id) {
-                        
+
 
 
 
