@@ -1,5 +1,6 @@
 package naveen16.wheredeyatdoe;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
@@ -7,6 +8,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -89,7 +91,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        String day = getDayoFWeek();
+        final String day = getDayoFWeek();
 
         Geocoder gc = new Geocoder(this);
         String name = "";
@@ -108,75 +110,153 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
         if (marker.equals(claMarker))
         {
-            DialogFragment df = new ReportDialogFragment();
-            df.show(getSupportFragmentManager(),"Option");
+            //DialogFragment df = new ReportDialogFragment();
+            //df.show(getSupportFragmentManager(),"Option");
             String hours = "";
             if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
                 hours = "6:00AM - 11:00PM";
             else
                 hours = "8:00AM - 10:00PM";
+            String [] options={"View Details","Report","Cancel"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select an option")
+                    .setItems(options,new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which){
+                            String hours = "";
+                            if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
+                                hours = "6:00AM - 11:00PM";
+                            else
+                                hours = "8:00AM - 10:00PM";
+                            if(which==0){
+                                Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
+                                intent.putExtra("NAME","College of Liberal Arts (CLA)");
+                                intent.putExtra("HOURS",hours);
+                                startActivity(intent);
+                            }
+                            if(which==1){
+                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
+                                intent.putExtra("NAME","College of Liberal Arts (CLA)");
+                                startActivity(intent);
+                            }
+
+                        }
+                    });
+            builder.create().show();
             //handle click here
-            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
-            intent.putExtra("NAME","College of Liberal Arts (CLA)");
-            intent.putExtra("HOURS",hours);
-            startActivity(intent);
+
         }
         else if(marker.equals(gregoryMarker)){
-            DialogFragment df = new ReportDialogFragment();
-            df.show(getSupportFragmentManager(),"Option");
-            String hours = "";
-            if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
-                hours = "6:00AM - 1:00AM";
-            else if(day.equals("Friday"))
-                hours = "6:00AM - 10:00PM";
-            else if(day.equals("Saturday"))
-                hours = "8:00AM - 10:00PM";
-            else
-                hours = "10:00AM - 1:00AM";
-            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
-            intent.putExtra("NAME","Gregory Gymnasium");
-            intent.putExtra("HOURS",hours);
-            //startActivity(intent);
+            //DialogFragment df = new ReportDialogFragment();
+            //df.show(getSupportFragmentManager(),"Option");
+
+            String [] options={"View Details","Report","Cancel"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select an option")
+                    .setItems(options,new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which){
+                            String hours = "";
+                            if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
+                                hours = "6:00AM - 1:00AM";
+                            else if(day.equals("Friday"))
+                                hours = "6:00AM - 10:00PM";
+                            else if(day.equals("Saturday"))
+                                hours = "8:00AM - 10:00PM";
+                            else
+                                hours = "10:00AM - 1:00AM";
+                            if(which==0){
+                                Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
+                                intent.putExtra("NAME","Gregory Gymnasium");
+                                intent.putExtra("HOURS",hours);
+                                startActivity(intent);
+                            }
+                            if(which==1){
+                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
+                                intent.putExtra("NAME","Gregory Gymnasium");
+                                startActivity(intent);
+                            }
+
+                        }
+                    });
+            builder.create().show();
+
         }
         else if(marker.equals(pclMarker)){
-            DialogFragment df = new ReportDialogFragment();
-            df.show(getSupportFragmentManager(),"Option");
-            String hours = "";
-            if(day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
-                hours = "Open 24 hours";
-            else if(day.equals("Friday"))
-                hours = "12:00AM - 11:00PM";
-            else if(day.equals("Saturday"))
-                hours = "10:00AM - 11:00PM";
-            else
-                hours = "11:00AM - 12:00AM";
-            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
-            intent.putExtra("NAME","Perry Castaneda Library (PCL)");
-            intent.putExtra("HOURS",hours);
-            startActivity(intent);
+            //DialogFragment df = new ReportDialogFragment();
+            //df.show(getSupportFragmentManager(),"Option");
+
+            String [] options={"View Details","Report","Cancel"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select an option")
+                    .setItems(options,new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            String hours = "";
+                            if (day.equals("Monday") || day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday"))
+                                hours = "Open 24 hours";
+                            else if (day.equals("Friday"))
+                                hours = "12:00AM - 11:00PM";
+                            else if (day.equals("Saturday"))
+                                hours = "10:00AM - 11:00PM";
+                            else
+                                hours = "11:00AM - 12:00AM";
+                            if (which == 0) {
+                                Intent intent = new Intent(HomeScreenMapsActivity.this, BuildingDetailsActivity.class);
+                                intent.putExtra("NAME", "Perry Castaneda Library (PCL)");
+                                intent.putExtra("HOURS", hours);
+                                startActivity(intent);
+                            }
+                            if (which == 1) {
+                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
+                                intent.putExtra("NAME","Perry Castaneda Library (PCL)");
+                                startActivity(intent);
+                            }
+                        }
+                    });
+            builder.create().show();
+
         }
+
         else if(marker.equals(sacMarker)){
-            DialogFragment df = new ReportDialogFragment();
-            df.show(getSupportFragmentManager(),"Option");
-            String hours = "";
-            if(day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
-                hours = "7:00AM - 5:00PM";
-            else if(day.equals("Monday"))
-                hours = "7:00AM - 12:00AM";
-            else if(day.equals("Saturday"))
-                hours = "10:00AM - 3:00AM";
-            else
-                hours = "12:00PM - 3:00AM";
-            Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
-            intent.putExtra("NAME","Student Activity Center (SAC)");
-            intent.putExtra("HOURS",hours);
-            startActivity(intent);
+            //DialogFragment df = new ReportDialogFragment();
+            //df.show(getSupportFragmentManager(),"Option");
+
+            String [] options={"View Details","Report","Cancel"};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select an option")
+                    .setItems(options,new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which){
+                            String hours = "";
+                            if(day.equals("Tuesday") || day.equals("Wednesday") || day.equals("Thursday") || day.equals("Friday"))
+                                hours = "7:00AM - 5:00PM";
+                            else if(day.equals("Monday"))
+                                hours = "7:00AM - 12:00AM";
+                            else if(day.equals("Saturday"))
+                                hours = "10:00AM - 3:00AM";
+                            else
+                                hours = "12:00PM - 3:00AM";
+                            if(which==0){
+                                Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
+                                intent.putExtra("NAME","Student Activity Center (SAC)");
+                                intent.putExtra("HOURS",hours);
+                                startActivity(intent);
+                            }
+                            if(which==1){
+                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
+                                intent.putExtra("NAME","Student Activity Center (SAC)");
+                                startActivity(intent);
+                            }
+
+                        }
+                    });
+            builder.create().show();
+
         }
         else{
 
         }
         return true;
+
     }
+
 
     private void addHeatMap() {
         List<LatLng> list = new ArrayList<LatLng>();
