@@ -48,7 +48,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
     private DatabaseReference mDatabase;
 
-    private Map<String,String> buildingsMap;
+    private Map<String,Report> buildingsMap;
     private Map<String,LatLng> buildingsLatLngs;
 
     TileProvider mProvider;
@@ -59,7 +59,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_maps);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        buildingsMap=new HashMap<String, String>();
+        buildingsMap=new HashMap<String, Report>();
         buildingsLatLngs=new HashMap<String, LatLng>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -112,11 +112,21 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                 //Post post = dataSnapshot.getValue(Post.class);
                 // ...
                 for( DataSnapshot child: dataSnapshot.getChildren()){
-                    String key=child.getKey();
-                    String value=(String)child.getValue();
+                    Log.d("OUTERLOOPKEY",child.getKey());
+                    Log.d("OUTERLOOPVAL",child.getValue().toString());
 
-                    buildingsMap.put(key,value);
-                    Log.d("BUILDINGS MAP","buildings map: "+buildingsMap.toString());
+                        List<String> temp = new ArrayList<String>();
+                        for (DataSnapshot child2 : child.getChildren()) {
+                            Log.d("INNERLOOPKEY",child2.getKey());
+                            Log.d("INNERLOOPVAL",child2.getValue().toString());
+                            String key = child2.getKey();
+                            String value = child2.getValue().toString();
+                            temp.add(value);
+                        }
+                        Report r= new Report(temp.get(0),Integer.parseInt(temp.get(1)));
+                        buildingsMap.put(child.getKey(),r);
+
+
                 }
                 addHeatMap();
             }
@@ -310,14 +320,15 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 //        list.add(new LatLng(30.2827, -97.7381)); //pcl
 //        list.add(new LatLng(30.2849, -97.7360)); //sac
 
-        String crowdedLvl = buildingsMap.get("Student Activity Center (SAC)");
+        //String crowdedLvl = buildingsMap.get("Student Activity Center (SAC)");
         int[] colors = {
                 Color.rgb(0, 255, 0), // green
                 Color.rgb(255, 255, 0),   // yellow
                 Color.rgb(255, 0, 0)  //red
         };
         for (String s : buildingsMap.keySet()) {
-            String value=buildingsMap.get(s);
+            Report R=buildingsMap.get(s);
+            String value=R.getLevel();
             float l1 = .1f;
             float l2 = .2f;
             float l3 = .3f;
@@ -353,6 +364,9 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
             List<LatLng> list = new ArrayList<LatLng>();
             list.add(buildingsLatLngs.get(s)); //cla
+            Log.d("SVALUE",s);
+            Log.d("BUILDING","message: "+buildingsLatLngs.toString());
+            Log.d("LATLONG", list.toString());
             // Create a heat map tile provider, passing it the latlngs of the police stations.
 
             mProvider = new HeatmapTileProvider.Builder()
