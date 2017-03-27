@@ -46,7 +46,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
     private DatabaseReference mDatabase;
 
-    private Map<String,Report> buildingsMap;
+    private Map<String,String> buildingsMap;
     private Map<String,LatLng> buildingsLatLngs;
 
     TileProvider mProvider;
@@ -57,7 +57,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_maps);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        buildingsMap=new HashMap<String, Report>();
+        buildingsMap=new HashMap<String, String>();
         buildingsLatLngs=new HashMap<String, LatLng>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -177,16 +177,21 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                     Log.d("OUTERLOOPKEY",child.getKey());
                     Log.d("OUTERLOOPVAL",child.getValue().toString());
 
-                        List<String> temp = new ArrayList<String>();
+                        //List<String> temp = new ArrayList<String>();
+                        String level="";
                         for (DataSnapshot child2 : child.getChildren()) {
                             Log.d("INNERLOOPKEY",child2.getKey());
                             Log.d("INNERLOOPVAL",child2.getValue().toString());
-                            String key = child2.getKey();
-                            String value = child2.getValue().toString();
-                            temp.add(value);
+                            if(child2.getKey().equals("total_value")){
+                                level=child2.getValue().toString();
+                            }
+//                            String key = child2.getKey();
+//                            String value = child2.getValue().toString();
+//                            temp.add(value);
                         }
-                        Report r= new Report(temp.get(0),Integer.parseInt(temp.get(1)));
-                        buildingsMap.put(child.getKey(),r);
+                        //Report r= new Report(temp.get(0),Integer.parseInt(temp.get(1)));
+
+                        buildingsMap.put(child.getKey(),level);
 
 
                 }
@@ -421,8 +426,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                 Color.rgb(255, 0, 0)  //red
         };
         for (String s : buildingsMap.keySet()) {
-            Report R=buildingsMap.get(s);
-            String value=R.getLevel();
+            String value=buildingsMap.get(s);
+
             float l1 = .1f;
             float l2 = .2f;
             float l3 = .3f;

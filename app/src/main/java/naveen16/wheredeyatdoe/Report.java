@@ -1,24 +1,26 @@
 package naveen16.wheredeyatdoe;
 
+import java.util.Date;
+
 /**
  * Created by raghavrajvanshy on 3/22/17.
  */
 
 public class Report {
     private String level;
-    private int numEntries;
+    private Date timeOfEntry;
 
-    public int getNumEntries() {
-        return numEntries;
+    public Date getTimeOfEntry() {
+        return timeOfEntry;
     }
 
-    public void setNumEntries(int numEntries) {
-        this.numEntries = numEntries;
+    public void setTimeOfEntry(Date time) {
+        timeOfEntry = time;
     }
 
-    public Report(String level, int numEntries){
+    public Report(String level, Date time){
         this.level=level;
-        this.numEntries=numEntries;
+        this.timeOfEntry=time;
 
     }
     public Report(){
@@ -34,6 +36,6 @@ public class Report {
     }
 
     public String toString(){
-        return "level:"+level+" numEntries: "+numEntries;
+        return "level:"+level+" TIME: "+timeOfEntry.toString();
     }
 }

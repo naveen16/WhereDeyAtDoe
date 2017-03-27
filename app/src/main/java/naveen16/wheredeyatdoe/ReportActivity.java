@@ -3,6 +3,7 @@ package naveen16.wheredeyatdoe;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,7 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +32,8 @@ public class ReportActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     private Map<String, String> buildingsMap;
-    private Map<String, Report> reportMap;
+    //private Map<String, List<Report>> reportMap;
+    List<Report> reportList;
     private Button submit;
     private String selectedLvl;
     @Override
@@ -37,7 +41,8 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         buildingsMap=new HashMap<String, String>();
-        reportMap=new HashMap<String, Report>();
+        //reportMap=new HashMap<String, List<Report>>();
+        reportList=new ArrayList<Report>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Intent intent = getIntent();
         final String name = intent.getExtras().getString("NAME");
@@ -84,49 +89,55 @@ public class ReportActivity extends AppCompatActivity {
 
                                 Log.d("DATAKEY",dataSnapshot.getKey());
                                // Log.d("DATAVALUE",dataSnapshot.getValue().toString());
-                                Report rep = dataSnapshot.getValue(Report.class);
+
                                 //Log.d("REPORTCLASSOBJ",rep.toString());
                                 Log.d("DATANAME",name);
                                 // Get Post object and use the values to update the UI
                                 //Post post = dataSnapshot.getValue(Post.class);
                                 // ...
-                                //for( DataSnapshot child: dataSnapshot.getChildren()){
-                                        //List<String> temp = new ArrayList<String>();
-//                                        //for (DataSnapshot child2 : child.getChildren()) {
-//                                            Log.d("DATASNAPSHOTchild2", child2.toString());
-//
-//                                            String key = child.getKey();
-//                                            String value =  child2.getValue().toString();
-//                                            Log.d("DATASNAPSHOTchild2VALUE",value);
-//                                            temp.add(value);
-//                                        //}
+
+                                for( DataSnapshot child: dataSnapshot.getChildren()){
+                                    if(!child.getKey().equals("total_value")) {
+                                        Report rep = child.getValue(Report.class);
+                                        reportList.add(rep);
+                                    }
                                         //Report r = new Report(temp.get(0), Integer.parseInt(temp.get(1)));
                                         //buildingsMap.put(key,value);
                                         //Log.d("PREV KEY", "prev ke " + child.getKey()+" report Map keys"+reportMap.keySet().toString());
-                                        Report newR;
-                                        Log.d("REPORTKEYS",reportMap.keySet().toString());
-                                        if(rep != null){
-                                            Log.d("IN INNER", "In inner");
-                                            //Report prevR=reportMap.get((child.getKey()));
-                                            int numLvl=(getNumFromLvl(rep.getLevel())*rep.getNumEntries())+getNumFromLvl(selectedLvl);
-                                            int totAvg=numLvl/(rep.getNumEntries()+1);
-                                            Log.d("total number for:"+dataSnapshot.getKey(), ""+numLvl);
-                                            newR=new Report (getLvlFromNum(totAvg),rep.getNumEntries()+1);
-                                            Log.d("REPORT OBJECT",dataSnapshot.getKey()+newR.toString());
-                                            reportMap.put(dataSnapshot.getKey(),newR);
-                                        }
-                                        else {
-                                            Log.d("ENTER","E");
-                                            newR=new Report(selectedLvl,1);
-                                            reportMap.put(dataSnapshot.getKey(), newR);
-                                            Log.d("ELSEMAP",reportMap.toString());
-                                        }
+//                                        Report newR;
+//                                        Log.d("REPORTKEYS",reportMap.keySet().toString());
+//                                        if(rep != null){
+//                                            Log.d("IN INNER", "In inner");
+//                                            //Report prevR=reportMap.get((child.getKey()));
+//                                            int numLvl=(getNumFromLvl(rep.getLevel())*rep.getNumEntries())+getNumFromLvl(selectedLvl);
+//                                            int totAvg=numLvl/(rep.getNumEntries()+1);
+//                                            Log.d("total number for:"+dataSnapshot.getKey(), ""+numLvl);
+//                                            newR=new Report (getLvlFromNum(totAvg),rep.getNumEntries()+1);
+//                                            Log.d("REPORT OBJECT",dataSnapshot.getKey()+newR.toString());
+//                                            reportMap.put(dataSnapshot.getKey(),newR);
+//                                        }
+//                                        else {
+//                                            Log.d("ENTER","E");
+//                                            newR=new Report(selectedLvl,1);
+//                                            reportMap.put(dataSnapshot.getKey(), newR);
+//                                            Log.d("ELSEMAP",reportMap.toString());
+//                                        }
 
 
 
-                                //}
-                                Log.d("REPORT MAP", "report map: " + reportMap.toString());
-                                mDatabase.child(name).setValue(reportMap.get(name));
+                                }
+                                int total=0;
+                                for(int i=0;i<reportList.size();i++){
+                                    Report R=reportList.get(i);
+                                    total+=getNumFromLvl(R.getLevel());
+                                }
+                                int finalavg=(total+getNumFromLvl(selectedLvl))/(reportList.size()+1);
+                                mDatabase.child(name).child("total_value").setValue(getLvlFromNum(finalavg));
+                                //SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                //Date date=new Date();
+                                Report newR=new Report(selectedLvl,new Date());
+                                //Log.d("REPORT MAP", "report map: " + reportMap.toString());
+                                mDatabase.child(name).push().setValue(newR);
                                 Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
                                 startActivity(intent2);
 
@@ -198,7 +209,7 @@ public class ReportActivity extends AppCompatActivity {
 //                        mDatabase.child(name).setValue(entry);
 //                        Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
 //                        startActivity(intent2);
-                        Log.d("NAMEOFBUILDING",name+" "+reportMap.get(name)+" ah");
+                        //Log.d("NAMEOFBUILDING",name+" "+reportMap.get(name)+" ah");
 
 
                     }
