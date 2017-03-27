@@ -3,10 +3,7 @@ package naveen16.wheredeyatdoe;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -29,7 +26,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -90,85 +86,85 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
-        info_set.put(claMarker, new String[]{"cla", "hours0"});
+        info_set.put(claMarker, new String[]{"College of Liberal Arts (CLA)", "hours0"});
 
         //adding a marker to gregory gym
         LatLng gregoryGym = new LatLng(30.2842,-97.7365);
         buildingsLatLngs.put("Gregory Gymnasium",gregoryGym);
         Marker gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
-        info_set.put(gregoryMarker, new String[]{"greg", "hours1"});
+        info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "hours1"});
 
         //adding a marker to pcl library
         LatLng pcl = new LatLng(30.2827, -97.7381);
         buildingsLatLngs.put("Perry Castaneda Library (PCL)",pcl);
         Marker pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
-        info_set.put(pclMarker, new String[]{"pcl", "hours2"});
+        info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "hours2"});
 
         //adding a marker to SAC
         LatLng sac = new LatLng(30.2849, -97.7360);
         buildingsLatLngs.put("Student Activity Center (SAC)",sac);
         Marker sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
-        info_set.put(sacMarker, new String[]{"sac", "hours3"});
+        info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "hours3"});
 
         //adding a marker to GDC
         LatLng gdc = new LatLng(30.28628, -97.73662);
         buildingsLatLngs.put("Gates Dell Complex (GDC)",gdc);
         Marker gdcMarker = mMap.addMarker(new MarkerOptions().position(gdc).title("GDC"));
-        info_set.put(gdcMarker, new String[]{"gdc", "hours4"});
+        info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "hours4"});
 
         //adding a marker to UT Tower
         LatLng mai = new LatLng(30.286096, -97.73938);
         buildingsLatLngs.put("Main Building (MAI)",mai);
         Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("MAI"));
-        info_set.put(maiMarker, new String[]{"mai", "hours5"});
+        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "hours5"});
 
         //adding a marker to Jackson Geological Sciences Building
         LatLng jgb = new LatLng(30.285821, -97.735745);
         buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)",jgb);
         Marker jgbMarker = mMap.addMarker(new MarkerOptions().position(jgb).title("JGB"));
-        info_set.put(jgbMarker, new String[]{"jgb", "hours6"});
+        info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "hours6"});
 
         //adding a marker to Robert A. Welch Hall
         LatLng wel = new LatLng(30.286696, -97.737692);
         buildingsLatLngs.put("Robert A. Welch Hall (WEL)",wel);
         Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
-        info_set.put(welMarker, new String[]{"wel", "hours7"});
+        info_set.put(welMarker, new String[]{"Robert A. Welch Hall (WEL)", "hours7"});
 
         //adding a marker to Flawn Academic Center
         LatLng fac = new LatLng(30.286281, -97.740313);
         buildingsLatLngs.put("Flawn Academic Hall (FAC)",fac);
         Marker facMarker = mMap.addMarker(new MarkerOptions().position(fac).title("FAC"));
-        info_set.put(facMarker, new String[]{"fac", "hours8"});
+        info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "hours8"});
 
         //adding a marker to Jack S. Blanton Museum of Art
         LatLng bma = new LatLng(30.281014, -97.737473);
         buildingsLatLngs.put("Jack S. Blanton Museum of Art (BMA)",bma);
         Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
-        info_set.put(bmaMarker, new String[]{"bma", "hours9"});
+        info_set.put(bmaMarker, new String[]{"Jack S. Blanton Museum of Art (BMA)", "hours9"});
 
         //adding a marker to Harry Ransom Center
         LatLng hrc = new LatLng(30.281014, -97.737473);
         buildingsLatLngs.put("Harry Ransom Center (HRC)",hrc);
         Marker hrcMarker = mMap.addMarker(new MarkerOptions().position(hrc).title("HRC"));
-        info_set.put(hrcMarker, new String[]{"hrc", "hours10"});
+        info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "hours10"});
 
         //adding a marker to Jester City Limits
         LatLng jcl = new LatLng(30.282806, -97.736771);
         buildingsLatLngs.put("Jester City Limits (JCL)",jcl);
         Marker jclMarker = mMap.addMarker(new MarkerOptions().position(jcl).title("JCL"));
-        info_set.put(jclMarker, new String[]{"jcl", "hours11"});
+        info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "hours11"});
 
         //adding a marker to South Mall
         LatLng sou = new LatLng(30.284373, -97.739572);
         buildingsLatLngs.put("South Mall (SOU)",sou);
         Marker souMarker = mMap.addMarker(new MarkerOptions().position(sou).title("SOU"));
-        info_set.put(souMarker, new String[]{"sou", "hours12"});
+        info_set.put(souMarker, new String[]{"South Mall (SOU)", "hours12"});
 
         //adding a marker to Waggener Hall
         LatLng wag = new LatLng(30.284995, -97.737630);
         buildingsLatLngs.put("Waggener Hall (WAG)",wag);
         Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
-        info_set.put(wagMarker, new String[]{"wag", "hours13"});
+        info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "hours13"});
 
        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -232,7 +228,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         if(info_set.containsKey(marker)){ //This might be an unnecessary check, as we can assume existing markers ar ours
             //we want to say something akin to info = get_info(), info[0] = name, info[1] = hours
             String[] info = info_set.get(marker);
-            String name = info[0];
+            final String name = info[0];
             String hours = info[1];
 
             //DialogFragment df = new ReportDialogFragment();
@@ -245,13 +241,13 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                             String hours = "test_value_hours_onClick()";
                             if(which==0){
                                 Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
-                                intent.putExtra("NAME","test_value_name_onClick()0");
+                                intent.putExtra("NAME",name);
                                 intent.putExtra("HOURS",hours);
                                 startActivity(intent);
                             }
                             if(which==1){
                                 Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
-                                intent.putExtra("NAME","test_value_name_onClick()1");
+                                intent.putExtra("NAME",name);
                                 startActivity(intent);
                             }
 
