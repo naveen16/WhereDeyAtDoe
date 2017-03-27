@@ -29,4 +29,8 @@ public class Report {
     public void setLevel(String level) {
         this.level = level;
     }
+
+    public String toString(){
+        return "level:"+level+" numEntries: "+numEntries;
+    }
 }

@@ -85,17 +85,34 @@ public class ReportActivity extends AppCompatActivity {
                                 // ...
                                 for( DataSnapshot child: dataSnapshot.getChildren()){
 
-
+                                        Log.d("DATASNAPSHOTchild", child.toString());
                                         List<String> temp = new ArrayList<String>();
                                         for (DataSnapshot child2 : child.getChildren()) {
-                                            String key = child2.getKey();
+                                            Log.d("DATASNAPSHOTchild2", child2.toString());
+
+                                            String key = child.getKey();
                                             String value =  child2.getValue().toString();
+                                            Log.d("DATASNAPSHOTchild2VALUE",value);
                                             temp.add(value);
                                         }
                                         Report r = new Report(temp.get(0), Integer.parseInt(temp.get(1)));
                                         //buildingsMap.put(key,value);
-                                        reportMap.put(child.getKey(), r);
-                                        Log.d("BUILDINGS MAP", "buildings map: " + buildingsMap.toString());
+                                        Log.d("PREV KEY", "prev ke " + child.getKey()+" report Map keys"+reportMap.keySet().toString());
+
+                                        if(reportMap.containsKey(child.getKey())){
+                                            Log.d("IN INNER", "In inner");
+                                            Report prevR=reportMap.get((child.getKey()));
+                                            int numLvl=getNumFromLvl(r.getLevel())+(getNumFromLvl(prevR.getLevel())*prevR.getNumEntries());
+                                            Log.d("total number", ""+numLvl);
+                                            Report newR=new Report(getLvlFromNum(getNumFromLvl(r.getLevel())+
+                                                    (getNumFromLvl(prevR.getLevel())*prevR.getNumEntries())/
+                                                    (prevR.getNumEntries()+1)),prevR.getNumEntries()+1);
+                                            reportMap.put(child.getKey(),newR);
+                                        }
+                                        else {
+                                            reportMap.put(child.getKey(), r);
+                                        }
+                                        Log.d("REPORT MAP", "report map: " + reportMap.toString());
 
                                 }
                             }
@@ -112,7 +129,7 @@ public class ReportActivity extends AppCompatActivity {
                         int numEntries=0;
                         int lvl=0;
                         int currlvl=0;
-                        Log.d("REPORTMAP",name);
+                        Log.d("REPORTMAP",reportMap.toString());
                         Report report = reportMap.get(name);
                         String crowdedLvl = "";
                         if(report != null) {
@@ -161,6 +178,7 @@ public class ReportActivity extends AppCompatActivity {
                         }
                         Report entry=new Report(crowdedLvl,numEntries+1);
                         Log.d("RUNNING","writing to database");
+                        Log.d("REPORT OBJECT",entry.toString());
                         mDatabase.child(name).setValue(entry);
                         Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
                         startActivity(intent2);
@@ -168,4 +186,32 @@ public class ReportActivity extends AppCompatActivity {
                     }
                 });
     }
+    public int getNumFromLvl(String selectedLvl){
+        if (selectedLvl.equals("Not Crowded")) {
+            return 1;
+        } else if (selectedLvl.equals("Slightly Crowded")) {
+            return 2;
+        } else if (selectedLvl.equals("Crowded")) {
+            return 3;
+        } else if (selectedLvl.equals("Very Crowded")) {
+            return 4;
+        } else {
+            return 5;
+        }
+    }
+    public String getLvlFromNum(int newAvg){
+        if (newAvg == 1) {
+            return "Not Crowded";
+        } else if (newAvg == 2) {
+            return "Slightly Crowded";
+        } else if (newAvg == 3) {
+            return "Crowded";
+        } else if (newAvg == 4) {
+            return "Very Crowded";
+        } else {
+            return "As Crowded as it Gets";
+        }
+
+    }
 }
+
