@@ -86,19 +86,21 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
-        info_set.put(claMarker, new String[]{"College of Liberal Arts (CLA)", "hours0"});
+        info_set.put(claMarker, new String[]{"College of Liberal Arts (CLA)", "0623062306230623062308220822"});
+        // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
+
 
         //adding a marker to gregory gym
         LatLng gregoryGym = new LatLng(30.2842,-97.7365);
         buildingsLatLngs.put("Gregory Gymnasium",gregoryGym);
         Marker gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
-        info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "hours1"});
+        info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "0601060106010601062208221001"});
 
         //adding a marker to pcl library
         LatLng pcl = new LatLng(30.2827, -97.7381);
         buildingsLatLngs.put("Perry Castaneda Library (PCL)",pcl);
         Marker pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
-        info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "hours2"});
+        info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "2424242424242424002310231124"});
 
         //adding a marker to SAC
         LatLng sac = new LatLng(30.2849, -97.7360);
@@ -478,5 +480,48 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         Date now = new Date();
         SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE"); // the day of the week abbreviated
         return simpleDateformat.format(now);
+    }
+
+    public String parseHours(String format){
+        /*
+            expects format: 28 int characters, 4 per day, 2 per time_start/time_close
+         */
+        char[] data = format.toCharArray();
+        String day = getDayoFWeek();
+        int d;
+        switch (day){
+            case "Monday" : d = 0;
+                break;
+            case "Tuesday" : d = 1;
+                break;
+            case "Wednesday" : d = 2;
+                break;
+            case "Thursday" : d = 3;
+                break;
+            case "Friday" : d = 4;
+                break;
+            case "Saturday" : d = 5;
+                break;
+            case "Sunday" : d = 6;
+                break;
+            default: d = -1;
+                break;
+        }
+        if (data[d*4] == 'c')
+            return "Closed";
+        int b = Integer.parseInt("" + data[d*4] + data[d*4+1]);
+        if(b == 24)
+            return "24 Hours";
+        int e = Integer.parseInt("" + data[d*4+2] + data[d*4+3]);
+
+        String TS1 = ((b / 12) == 1) ? "PM" : "AM";
+        String TS2 = ((e / 12) == 1) ? "PM" : "AM";
+
+        if(e == 24)
+            return b%12 + ":00" + TS1 + " to midnight";
+        if(b == 00)
+            return "open until " + e%12 + ":00" + TS2;
+
+        return b%12 + ":00" + TS1 + " - " + e%12 + ":00" + TS2;
     }
 }
