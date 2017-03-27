@@ -21,6 +21,9 @@ public class Report {
         this.numEntries=numEntries;
 
     }
+    public Report(){
+
+    }
 
     public String getLevel() {
         return level;
