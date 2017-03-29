@@ -287,7 +287,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
             //we want to say something akin to info = get_info(), info[0] = name, info[1] = hours
             String[] info = info_set.get(marker);
             final String name = info[0];
-            String hours = info[1];
+            final String hours = parseHours(info[1]);
 
             //DialogFragment df = new ReportDialogFragment();
             //df.show(getSupportFragmentManager(),"Option");
@@ -296,7 +296,6 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
             builder.setTitle("Select an option")
                     .setItems(options,new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which){
-                            String hours = "test_value_hours_onClick()";
                             if(which==0){
                                 Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
                                 intent.putExtra("NAME",name);
