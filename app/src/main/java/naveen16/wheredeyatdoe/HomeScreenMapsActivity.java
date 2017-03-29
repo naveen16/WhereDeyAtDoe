@@ -49,6 +49,9 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
     private Map<String,String> buildingsMap;
     private Map<String,LatLng> buildingsLatLngs;
 
+
+    List<Report> reportList;
+
     TileProvider mProvider;
     TileOverlay mOverlay;
 
@@ -59,6 +62,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         mDatabase = FirebaseDatabase.getInstance().getReference();
         buildingsMap=new HashMap<String, String>();
         buildingsLatLngs=new HashMap<String, LatLng>();
+        reportList=new ArrayList<Report>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -168,7 +172,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
         info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "hours13"});
 
-       mDatabase.addValueEventListener(new ValueEventListener() {
+       mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("GREENYELLOW","Reached Green yellow color method");
@@ -184,17 +188,37 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                         for (DataSnapshot child2 : child.getChildren()) {
                             Log.d("INNERLOOPKEY",child2.getKey());
                             Log.d("INNERLOOPVAL",child2.getValue().toString());
-                            if(child2.getKey().equals("total_value")){
-                                level=child2.getValue().toString();
+
+                            if(!child2.getKey().equals("total_value")){
+                                Report rep = child2.getValue(Report.class);
+                                Date currDate= new Date();
+                                Date repDate=rep.getTimeOfEntry();
+                                if(currDate.getHours()-repDate.getHours()>1 || currDate.getDay() != repDate.getDay()){
+                                    child2.getRef().removeValue();
+                                }
+                                else
+                                    reportList.add(rep);
+
                             }
 //                            String key = child2.getKey();
 //                            String value = child2.getValue().toString();
 //                            temp.add(value);
                         }
-                        //Report r= new Report(temp.get(0),Integer.parseInt(temp.get(1)));
+                        int total=0;
+                        for(int i=0;i<reportList.size();i++){
+                            Report R=reportList.get(i);
+                            total+=getNumFromLvl(R.getLevel());
+                        }
+                        if(reportList.size()==0){
+                            child.getRef().removeValue();
+                        }
+                        else {
+                            int finalavg = (total) / (reportList.size());
+                            mDatabase.child(child.getKey()).child("total_value").setValue(getLvlFromNum(finalavg));
+                            //Report r= new Report(temp.get(0),Integer.parseInt(temp.get(1)));
 
-                        buildingsMap.put(child.getKey(),level);
-
+                            buildingsMap.put(child.getKey(), getLvlFromNum(finalavg));
+                        }
 
                 }
                 addHeatMap();
@@ -210,6 +234,33 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         //mPostReference.addValueEventListener(postListener);
 
         //addHeatMap();
+
+    }
+    public int getNumFromLvl(String selectedLvl){
+        if (selectedLvl.equals("Not Crowded")) {
+            return 1;
+        } else if (selectedLvl.equals("Slightly Crowded")) {
+            return 2;
+        } else if (selectedLvl.equals("Crowded")) {
+            return 3;
+        } else if (selectedLvl.equals("Very Crowded")) {
+            return 4;
+        } else {
+            return 5;
+        }
+    }
+    public String getLvlFromNum(int newAvg){
+        if (newAvg == 1) {
+            return "Not Crowded";
+        } else if (newAvg == 2) {
+            return "Slightly Crowded";
+        } else if (newAvg == 3) {
+            return "Crowded";
+        } else if (newAvg == 4) {
+            return "Very Crowded";
+        } else {
+            return "As Crowded as it Gets";
+        }
 
     }
 

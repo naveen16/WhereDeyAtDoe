@@ -32,7 +32,6 @@ public class ReportActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     private Map<String, String> buildingsMap;
-    //private Map<String, List<Report>> reportMap;
     List<Report> reportList;
     private Button submit;
     private String selectedLvl;
@@ -41,7 +40,6 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
         buildingsMap=new HashMap<String, String>();
-        //reportMap=new HashMap<String, List<Report>>();
         reportList=new ArrayList<Report>();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Intent intent = getIntent();
@@ -65,11 +63,6 @@ public class ReportActivity extends AppCompatActivity {
                         Log.d("SELECT","Item Selected");
 
                         selectedLvl=spinner.getSelectedItem().toString();
-
-
-
-
-
                     }
 
                     @Override
@@ -88,41 +81,14 @@ public class ReportActivity extends AppCompatActivity {
                                 Log.d("DATACHILD",dataSnapshot.getChildrenCount()+"");
 
                                 Log.d("DATAKEY",dataSnapshot.getKey());
-                               // Log.d("DATAVALUE",dataSnapshot.getValue().toString());
 
-                                //Log.d("REPORTCLASSOBJ",rep.toString());
                                 Log.d("DATANAME",name);
-                                // Get Post object and use the values to update the UI
-                                //Post post = dataSnapshot.getValue(Post.class);
-                                // ...
 
                                 for( DataSnapshot child: dataSnapshot.getChildren()){
                                     if(!child.getKey().equals("total_value")) {
                                         Report rep = child.getValue(Report.class);
                                         reportList.add(rep);
                                     }
-                                        //Report r = new Report(temp.get(0), Integer.parseInt(temp.get(1)));
-                                        //buildingsMap.put(key,value);
-                                        //Log.d("PREV KEY", "prev ke " + child.getKey()+" report Map keys"+reportMap.keySet().toString());
-//                                        Report newR;
-//                                        Log.d("REPORTKEYS",reportMap.keySet().toString());
-//                                        if(rep != null){
-//                                            Log.d("IN INNER", "In inner");
-//                                            //Report prevR=reportMap.get((child.getKey()));
-//                                            int numLvl=(getNumFromLvl(rep.getLevel())*rep.getNumEntries())+getNumFromLvl(selectedLvl);
-//                                            int totAvg=numLvl/(rep.getNumEntries()+1);
-//                                            Log.d("total number for:"+dataSnapshot.getKey(), ""+numLvl);
-//                                            newR=new Report (getLvlFromNum(totAvg),rep.getNumEntries()+1);
-//                                            Log.d("REPORT OBJECT",dataSnapshot.getKey()+newR.toString());
-//                                            reportMap.put(dataSnapshot.getKey(),newR);
-//                                        }
-//                                        else {
-//                                            Log.d("ENTER","E");
-//                                            newR=new Report(selectedLvl,1);
-//                                            reportMap.put(dataSnapshot.getKey(), newR);
-//                                            Log.d("ELSEMAP",reportMap.toString());
-//                                        }
-
 
 
                                 }
@@ -131,12 +97,7 @@ public class ReportActivity extends AppCompatActivity {
                                     Report R=reportList.get(i);
                                     total+=getNumFromLvl(R.getLevel());
                                 }
-                                int finalavg=(total+getNumFromLvl(selectedLvl))/(reportList.size()+1);
-                                mDatabase.child(name).child("total_value").setValue(getLvlFromNum(finalavg));
-                                //SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                                //Date date=new Date();
                                 Report newR=new Report(selectedLvl,new Date());
-                                //Log.d("REPORT MAP", "report map: " + reportMap.toString());
                                 mDatabase.child(name).push().setValue(newR);
                                 Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
                                 startActivity(intent2);
@@ -151,66 +112,6 @@ public class ReportActivity extends AppCompatActivity {
                                 // ...
                             }
                         });
-
-//                        String level="";
-//                        int numEntries=0;
-//                        int lvl=0;
-//                        int currlvl=0;
-//                        Log.d("REPORTMAP",reportMap.toString());
-//                        Report report = reportMap.get(name);
-//                        String crowdedLvl = "";
-//                        if(report != null) {
-//                            Log.d("REPORT2","Inside IF");
-//                            level = report.getLevel();
-//                            numEntries = report.getNumEntries();
-//                            if (level.equals("Not Crowded")) {
-//                                lvl = 1;
-//                            } else if (level.equals("Slightly Crowded")) {
-//                                lvl = 2;
-//                            } else if (level.equals("Crowded")) {
-//                                lvl = 3;
-//                            } else if (level.equals("Very Crowded")) {
-//                                lvl = 4;
-//                            } else {
-//                                lvl = 5;
-//                            }
-//                            if (selectedLvl.equals("Not Crowded")) {
-//                                currlvl = 1;
-//                            } else if (selectedLvl.equals("Slightly Crowded")) {
-//                                currlvl = 2;
-//                            } else if (selectedLvl.equals("Crowded")) {
-//                                currlvl = 3;
-//                            } else if (selectedLvl.equals("Very Crowded")) {
-//                                currlvl = 4;
-//                            } else {
-//                                currlvl = 5;
-//                            }
-//                            int total = lvl * numEntries;
-//                            int newAvg = (total + currlvl) / (numEntries + 1);
-//
-//                            if (newAvg == 1) {
-//                                crowdedLvl = "Not Crowded";
-//                            } else if (newAvg == 2) {
-//                                crowdedLvl = "Slightly Crowded";
-//                            } else if (newAvg == 3) {
-//                                crowdedLvl = "Crowded";
-//                            } else if (newAvg == 4) {
-//                                crowdedLvl = "Very Crowded";
-//                            } else {
-//                                crowdedLvl = "As Crowded as it Gets";
-//                            }
-//                        }
-//                        if(crowdedLvl.equals("")){
-//                            crowdedLvl=selectedLvl;
-//                        }
-//                        Report entry=new Report(crowdedLvl,numEntries+1);
-//                        Log.d("RUNNING","writing to database");
-//                        Log.d("REPORT OBJECT",entry.toString());
-//                        mDatabase.child(name).setValue(entry);
-//                        Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
-//                        startActivity(intent2);
-                        //Log.d("NAMEOFBUILDING",name+" "+reportMap.get(name)+" ah");
-
 
                     }
                 });
