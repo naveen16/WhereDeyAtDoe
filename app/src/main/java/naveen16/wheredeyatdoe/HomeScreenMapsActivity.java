@@ -110,67 +110,67 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         LatLng sac = new LatLng(30.2849, -97.7360);
         buildingsLatLngs.put("Student Activity Center (SAC)",sac);
         Marker sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
-        info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "hours3"});
+        info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "07170717071707170717cccccccc"});
 
         //adding a marker to GDC
         LatLng gdc = new LatLng(30.28628, -97.73662);
         buildingsLatLngs.put("Gates Dell Complex (GDC)",gdc);
         Marker gdcMarker = mMap.addMarker(new MarkerOptions().position(gdc).title("GDC"));
-        info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "hours4"});
+        info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "2424242424242424242424242424"});
 
         //adding a marker to UT Tower
         LatLng mai = new LatLng(30.286096, -97.73938);
         buildingsLatLngs.put("Main Building (MAI)",mai);
-        Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("MAI"));
+        Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
         info_set.put(maiMarker, new String[]{"Main Building (MAI)", "hours5"});
 
         //adding a marker to Jackson Geological Sciences Building
         LatLng jgb = new LatLng(30.285821, -97.735745);
         buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)",jgb);
         Marker jgbMarker = mMap.addMarker(new MarkerOptions().position(jgb).title("JGB"));
-        info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "hours6"});
+        info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "08220822082208220818cccc1422"});
 
         //adding a marker to Robert A. Welch Hall
         LatLng wel = new LatLng(30.286696, -97.737692);
         buildingsLatLngs.put("Robert A. Welch Hall (WEL)",wel);
         Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
-        info_set.put(welMarker, new String[]{"Robert A. Welch Hall (WEL)", "hours7"});
+        info_set.put(welMarker, new String[]{"Robert A. Welch Hall (WEL)", "08220822082208220818cccc1422"});
 
         //adding a marker to Flawn Academic Center
         LatLng fac = new LatLng(30.286281, -97.740313);
         buildingsLatLngs.put("Flawn Academic Hall (FAC)",fac);
         Marker facMarker = mMap.addMarker(new MarkerOptions().position(fac).title("FAC"));
-        info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "hours8"});
+        info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "2424242424242424002210220022"});
 
         //adding a marker to Jack S. Blanton Museum of Art
         LatLng bma = new LatLng(30.281014, -97.737473);
         buildingsLatLngs.put("Jack S. Blanton Museum of Art (BMA)",bma);
         Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
-        info_set.put(bmaMarker, new String[]{"Jack S. Blanton Museum of Art (BMA)", "hours9"});
+        info_set.put(bmaMarker, new String[]{"Jack S. Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
 
         //adding a marker to Harry Ransom Center
         LatLng hrc = new LatLng(30.281014, -97.737473);
         buildingsLatLngs.put("Harry Ransom Center (HRC)",hrc);
         Marker hrcMarker = mMap.addMarker(new MarkerOptions().position(hrc).title("HRC"));
-        info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "hours10"});
+        info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "1017101710171019101712171217"});
 
         //adding a marker to Jester City Limits
         LatLng jcl = new LatLng(30.282806, -97.736771);
         buildingsLatLngs.put("Jester City Limits (JCL)",jcl);
         Marker jclMarker = mMap.addMarker(new MarkerOptions().position(jcl).title("JCL"));
-        info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "hours11"});
+        info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "0723072307230723072109200923"});
 
         //adding a marker to South Mall
         LatLng sou = new LatLng(30.284373, -97.739572);
         buildingsLatLngs.put("South Mall (SOU)",sou);
         Marker souMarker = mMap.addMarker(new MarkerOptions().position(sou).title("SOU"));
-        info_set.put(souMarker, new String[]{"South Mall (SOU)", "hours12"});
+        info_set.put(souMarker, new String[]{"South Mall (SOU)", "2424242424242424242424242424"});
 
         //adding a marker to Waggener Hall
         LatLng wag = new LatLng(30.284995, -97.737630);
         buildingsLatLngs.put("Waggener Hall (WAG)",wag);
         Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
-        info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "hours13"});
+        info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
 
        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
