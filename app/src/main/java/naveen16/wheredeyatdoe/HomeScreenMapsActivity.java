@@ -349,8 +349,14 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                                 Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
                                 intent.putExtra("NAME",name);
                                 intent.putExtra("HOURS",hours);
-                                intent.putExtra("POPULARITY",buildingsMap.get(name));
-                                intent.putExtra("HISTORY",buildingsHistoryMap.get(name));
+                                if(buildingsMap.get(name) == null)
+                                    intent.putExtra("POPULARITY","No Current Data");
+                                else
+                                    intent.putExtra("POPULARITY",buildingsMap.get(name));
+                                if(buildingsHistoryMap.get(name) == null)
+                                    intent.putExtra("HISTORY","No Prior Data");
+                                else
+                                    intent.putExtra("HISTORY",buildingsHistoryMap.get(name));
                                 startActivity(intent);
                             }
                             if(which==1){
