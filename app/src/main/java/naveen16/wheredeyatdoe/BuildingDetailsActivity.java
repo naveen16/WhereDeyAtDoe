@@ -18,5 +18,9 @@ public class BuildingDetailsActivity extends AppCompatActivity {
         String hours = intent.getExtras().getString("HOURS");
         TextView hoursText = (TextView) findViewById(R.id.hoursValue);
         hoursText.setText(hours);
+        TextView popularityValue = (TextView) findViewById(R.id.popularityValue);
+        popularityValue.setText(intent.getExtras().getString("POPULARITY"));
+        TextView popularityHistoryValue = (TextView) findViewById(R.id.popularityHistoryValue);
+        popularityHistoryValue.setText(intent.getExtras().getString("HISTORY"));
     }
 }

@@ -28,7 +28,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginLeft="22dp"
         android:layout_marginStart="22dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/hoursLabel" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_below="@+id/hoursLabel"
         android:layout_alignLeft="@+id/hoursLabel"
         android:layout_alignStart="@+id/hoursLabel"
-        android:layout_marginTop="47dp"
+        android:layout_marginTop="25dp"
         android:id="@+id/hoursValue"
         android:text="6:00 AM - 10:00 PM" />
 
@@ -46,19 +46,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/hoursValue"
+        android:layout_marginTop="40dp"
+        android:id="@+id/popularityLabel"
+        android:layout_alignRight="@+id/hoursLabel"
+        android:layout_alignEnd="@+id/hoursLabel"
         android:layout_alignLeft="@+id/hoursValue"
-        android:layout_alignStart="@+id/hoursValue"
-        android:layout_marginTop="76dp"
-        android:id="@+id/popularityLabel" />
+        android:layout_alignStart="@+id/hoursValue" />
 
     <TextView
-        android:text="Very Crowded"
+        android:text="No data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/popularityLabel"
         android:layout_alignLeft="@+id/popularityLabel"
         android:layout_alignStart="@+id/popularityLabel"
-        android:layout_marginTop="57dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/popularityValue" />
+
+    <TextView
+        android:text="History"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/popularityValue"
+        android:layout_marginTop="40dp"
+        android:id="@+id/popularityHistoryLabel"
+        android:layout_alignRight="@+id/hoursLabel"
+        android:layout_alignEnd="@+id/hoursLabel"
+        android:layout_alignLeft="@+id/hoursValue"
+        android:layout_alignStart="@+id/hoursValue" />
+
+    <TextView
+        android:text="No prior data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/popularityHistoryLabel"
+        android:layout_alignLeft="@+id/popularityLabel"
+        android:layout_alignStart="@+id/popularityLabel"
+        android:layout_marginTop="30dp"
+        android:id="@+id/popularityHistoryValue" />
 
 </RelativeLayout>

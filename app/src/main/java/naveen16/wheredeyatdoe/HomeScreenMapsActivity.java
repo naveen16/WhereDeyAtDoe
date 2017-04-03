@@ -48,9 +48,11 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
     private Map<String,String> buildingsMap;
     private Map<String,LatLng> buildingsLatLngs;
+    private Map<String,String> buildingsHistoryMap;
 
 
     List<Report> reportList;
+    List<Report> historyRList;
 
     TileProvider mProvider;
     TileOverlay mOverlay;
@@ -63,6 +65,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         buildingsMap=new HashMap<String, String>();
         buildingsLatLngs=new HashMap<String, LatLng>();
         reportList=new ArrayList<Report>();
+        historyRList=new ArrayList<Report>();
+        buildingsHistoryMap=new HashMap<String, String>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -179,25 +183,26 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                 // Get Post object and use the values to update the UI
                 //Post post = dataSnapshot.getValue(Post.class);
                 // ...
-                for( DataSnapshot child: dataSnapshot.getChildren()){
-                    reportList=new ArrayList<Report>();
-                    Log.d("OUTERLOOPKEY",child.getKey());
-                    Log.d("OUTERLOOPVAL",child.getValue().toString());
+                for( DataSnapshot child: dataSnapshot.getChildren()) {
+                    reportList = new ArrayList<Report>();
+                    historyRList=new ArrayList<Report>();
+                    Log.d("OUTERLOOPKEY", child.getKey());
+                    Log.d("OUTERLOOPVAL", child.getValue().toString());
 
-                        //List<String> temp = new ArrayList<String>();
-                        String level="";
+                    //List<String> temp = new ArrayList<String>();
+                    if (!child.getKey().equals("history")){
+                        String level = "";
                         for (DataSnapshot child2 : child.getChildren()) {
-                            Log.d("INNERLOOPKEY",child2.getKey());
-                            Log.d("INNERLOOPVAL",child2.getValue().toString());
+                            Log.d("INNERLOOPKEY", child2.getKey());
+                            Log.d("INNERLOOPVAL", child2.getValue().toString());
 
-                            if(!child2.getKey().equals("total_value")){
+                            if (!child2.getKey().equals("total_value")) {
                                 Report rep = child2.getValue(Report.class);
-                                Date currDate= new Date();
-                                Date repDate=rep.getTimeOfEntry();
-                                if(currDate.getHours()-repDate.getHours()>1 || currDate.getDay() != repDate.getDay()){
+                                Date currDate = new Date();
+                                Date repDate = rep.getTimeOfEntry();
+                                if (currDate.getHours() - repDate.getHours() > 1 || currDate.getDay() != repDate.getDay()) {
                                     child2.getRef().removeValue();
-                                }
-                                else
+                            }   else
                                     reportList.add(rep);
 
                             }
@@ -205,22 +210,58 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 //                            String value = child2.getValue().toString();
 //                            temp.add(value);
                         }
-                        int total=0;
-                        for(int i=0;i<reportList.size();i++){
-                            Report R=reportList.get(i);
-                            total+=getNumFromLvl(R.getLevel());
+                        int total = 0;
+                        for (int i = 0; i < reportList.size(); i++) {
+                            Report R = reportList.get(i);
+                            total += getNumFromLvl(R.getLevel());
                         }
-                        Log.d("RLIST","name:"+child.getKey()+reportList.toString());
-                        if(reportList.size()==0){
+                        Log.d("RLIST", "name:" + child.getKey() + reportList.toString());
+                        if (reportList.size() == 0) {
                             child.getRef().removeValue();
-                        }
-                        else {
+                        } else {
                             int finalavg = (total) / (reportList.size());
                             mDatabase.child(child.getKey()).child("total_value").setValue(getLvlFromNum(finalavg));
-                            //Report r= new Report(temp.get(0),Integer.parseInt(temp.get(1)));
+                        //Report r= new Report(temp.get(0),Integer.parseInt(temp.get(1)));
 
                             buildingsMap.put(child.getKey(), getLvlFromNum(finalavg));
                         }
+                    }
+                    //read history
+                    else {
+                        Log.d("CKEY",child.getKey());
+                        for (DataSnapshot child2 : child.getChildren()) {
+                            Log.d("OUTERLOOPKEYHISTORY", child2.getKey());
+                            Log.d("OUTERLOOPVALHISTORY", child2.getValue().toString());
+                            for (DataSnapshot child3 : child2.getChildren()) {
+                                Log.d("INNERLOOPKEYHISTORY", child3.getKey());
+                                Log.d("INNERLOOPVALHISTORY", child3.getValue().toString());
+                                if (!child3.getKey().equals("total_value")) {
+                                    Report rep = child3.getValue(Report.class);
+                                    Log.d("REPHISTORY", rep.toString());
+                                    Date currDate = new Date();
+                                    Date repDate = rep.getTimeOfEntry();
+                                    Log.d("currDateHours",currDate.getHours()+"");
+                                    Log.d("repDateHours",repDate.getHours()+"");
+                                    Log.d("currDateDay",currDate.getDay()+"");
+                                    Log.d("repDateDay",repDate.getDay()+"");
+                                    Log.d("currDateDate",currDate.getDate()+"");
+                                    Log.d("repDateDate",repDate.getDate()+"");
+                                    if (currDate.getHours() - repDate.getHours() <= 1 && currDate.getDay() == repDate.getDay() && currDate.getDate() != repDate.getDate()) {
+                                        historyRList.add(rep);
+                                    }
+                                }
+                            }
+                            int total = 0;
+                            for (int i = 0; i < historyRList.size(); i++) {
+                                Report R = historyRList.get(i);
+                                total += getNumFromLvl(R.getLevel());
+                            }
+                            int finalavg=0;
+                            if(historyRList.size() !=0)
+                                finalavg = (total) / (historyRList.size());
+                            buildingsHistoryMap.put(child2.getKey(),getLvlFromNum(finalavg));
+                        }
+                    }
 
                 }
                 addHeatMap();
@@ -239,7 +280,10 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
     }
     public int getNumFromLvl(String selectedLvl){
-        if (selectedLvl.equals("Not Crowded")) {
+        if (selectedLvl.equals("No prior data")){
+            return 0;
+        }
+        else if (selectedLvl.equals("Not Crowded")) {
             return 1;
         } else if (selectedLvl.equals("Slightly Crowded")) {
             return 2;
@@ -252,7 +296,10 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         }
     }
     public String getLvlFromNum(int newAvg){
-        if (newAvg == 1) {
+        if(newAvg==0){
+            return "No prior data";
+        }
+        else if (newAvg == 1) {
             return "Not Crowded";
         } else if (newAvg == 2) {
             return "Slightly Crowded";
@@ -302,6 +349,8 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                                 Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
                                 intent.putExtra("NAME",name);
                                 intent.putExtra("HOURS",hours);
+                                intent.putExtra("POPULARITY",buildingsMap.get(name));
+                                intent.putExtra("HISTORY",buildingsHistoryMap.get(name));
                                 startActivity(intent);
                             }
                             if(which==1){

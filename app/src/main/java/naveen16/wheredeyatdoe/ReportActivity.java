@@ -100,6 +100,7 @@ public class ReportActivity extends AppCompatActivity {
                                 Log.d("REPORTLIST",reportList.toString());
                                 Report newR=new Report(selectedLvl,new Date());
                                 mDatabase.child(name).push().setValue(newR);
+                                mDatabase.child("history").child(name).push().setValue(newR);
                                 Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
                                 startActivity(intent2);
 
