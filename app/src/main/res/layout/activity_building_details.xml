@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_building_details"
     android:layout_width="match_parent"
@@ -8,81 +9,102 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#123e84"
     tools:context="naveen16.wheredeyatdoe.BuildingDetailsActivity">
 
     <TextView
-        android:text="TextView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:height="50dp"
-        android:gravity="center"
         android:id="@+id/buildingName"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="fill_parent"
+        android:layout_height="80sp"
+        android:layout_centerHorizontal="true"
+        android:height="50dp"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:text="Testing long building name (SAC)"
+        android:textSize="25sp" />
 
-    <TextView
-        android:text="Todays Hours:  "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buildingName"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="181dp"
+        android:layout_height="239dp"
+        android:layout_above="@+id/popularityHistoryLabel"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="22dp"
-        android:layout_marginStart="22dp"
-        android:layout_marginTop="20dp"
-        android:id="@+id/hoursLabel" />
+        android:layout_below="@+id/buildingName"
+        android:layout_toLeftOf="@+id/hoursValue"
+        android:layout_toStartOf="@+id/hoursValue"
+        android:layout_x="-1dp"
+        android:layout_y="96dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitStart"
+        app:srcCompat="@drawable/generic_building" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/hoursLabel"
-        android:layout_alignLeft="@+id/hoursLabel"
-        android:layout_alignStart="@+id/hoursLabel"
-        android:layout_marginTop="25dp"
         android:id="@+id/hoursValue"
-        android:text="6:00 AM - 10:00 PM" />
-
-    <TextView
-        android:text="Popularity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/hoursValue"
-        android:layout_marginTop="40dp"
-        android:id="@+id/popularityLabel"
-        android:layout_alignRight="@+id/hoursLabel"
-        android:layout_alignEnd="@+id/hoursLabel"
-        android:layout_alignLeft="@+id/hoursValue"
-        android:layout_alignStart="@+id/hoursValue" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/buildingName"
+        android:layout_marginTop="35dp"
+        android:layout_x="193dp"
+        android:layout_y="106dp"
+        android:fontFamily="monospace"
+        android:text="Today's hours:\n16:00AM - 10:00PM"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <TextView
-        android:text="No data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/popularityLabel"
-        android:layout_alignLeft="@+id/popularityLabel"
-        android:layout_alignStart="@+id/popularityLabel"
-        android:layout_marginTop="30dp"
-        android:id="@+id/popularityValue" />
-
-    <TextView
-        android:text="History"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/popularityValue"
-        android:layout_marginTop="40dp"
-        android:id="@+id/popularityHistoryLabel"
-        android:layout_alignRight="@+id/hoursLabel"
-        android:layout_alignEnd="@+id/hoursLabel"
-        android:layout_alignLeft="@+id/hoursValue"
-        android:layout_alignStart="@+id/hoursValue" />
-
-    <TextView
-        android:text="No prior data"
+        android:id="@+id/popularityHistoryValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/popularityHistoryLabel"
-        android:layout_alignLeft="@+id/popularityLabel"
-        android:layout_alignStart="@+id/popularityLabel"
-        android:layout_marginTop="30dp"
-        android:id="@+id/popularityHistoryValue" />
+        android:layout_marginTop="13dp"
+        android:layout_toEndOf="@+id/imageView"
+        android:layout_toRightOf="@+id/imageView"
+        android:layout_x="152dp"
+        android:layout_y="444dp"
+        android:text="No prior data"
+        android:textStyle="bold" />
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/popularityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/hoursValue"
+        android:layout_alignStart="@+id/hoursValue"
+        android:layout_below="@+id/hoursValue"
+        android:layout_marginTop="33dp"
+        android:layout_x="210dp"
+        android:layout_y="196dp"
+        android:text="Popularity"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/popularityValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/popularityLabel"
+        android:layout_alignRight="@+id/popularityLabel"
+        android:layout_below="@+id/popularityLabel"
+        android:layout_marginTop="20dp"
+        android:layout_x="226dp"
+        android:layout_y="244dp"
+        android:text="No data"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/popularityHistoryLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/popularityValue"
+        android:layout_marginTop="106dp"
+        android:layout_toEndOf="@+id/imageView"
+        android:layout_toRightOf="@+id/imageView"
+        android:layout_x="75dp"
+        android:layout_y="381dp"
+        android:text="History"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+</AbsoluteLayout>

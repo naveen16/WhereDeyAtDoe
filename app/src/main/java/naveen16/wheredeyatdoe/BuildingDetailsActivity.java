@@ -15,7 +15,9 @@ public class BuildingDetailsActivity extends AppCompatActivity {
         String name = intent.getExtras().getString("NAME");
         TextView buildingName = (TextView) findViewById(R.id.buildingName);
         buildingName.setText(name);
-        String hours = intent.getExtras().getString("HOURS");
+
+
+        String hours = "Today's hours:\n" + intent.getExtras().getString("HOURS");
         TextView hoursText = (TextView) findViewById(R.id.hoursValue);
         hoursText.setText(hours);
         TextView popularityValue = (TextView) findViewById(R.id.popularityValue);
