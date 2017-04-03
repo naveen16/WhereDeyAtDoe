@@ -180,6 +180,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                 //Post post = dataSnapshot.getValue(Post.class);
                 // ...
                 for( DataSnapshot child: dataSnapshot.getChildren()){
+                    reportList=new ArrayList<Report>();
                     Log.d("OUTERLOOPKEY",child.getKey());
                     Log.d("OUTERLOOPVAL",child.getValue().toString());
 
@@ -209,6 +210,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                             Report R=reportList.get(i);
                             total+=getNumFromLvl(R.getLevel());
                         }
+                        Log.d("RLIST","name:"+child.getKey()+reportList.toString());
                         if(reportList.size()==0){
                             child.getRef().removeValue();
                         }

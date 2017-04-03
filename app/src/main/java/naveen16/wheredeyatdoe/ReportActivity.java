@@ -97,6 +97,7 @@ public class ReportActivity extends AppCompatActivity {
                                     Report R=reportList.get(i);
                                     total+=getNumFromLvl(R.getLevel());
                                 }
+                                Log.d("REPORTLIST",reportList.toString());
                                 Report newR=new Report(selectedLvl,new Date());
                                 mDatabase.child(name).push().setValue(newR);
                                 Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
