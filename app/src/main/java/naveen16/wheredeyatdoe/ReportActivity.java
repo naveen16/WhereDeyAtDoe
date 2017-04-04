@@ -50,9 +50,9 @@ public class ReportActivity extends AppCompatActivity {
         final Spinner spinner= (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.Crowded_Options, android.R.layout.simple_spinner_item);
-// Specify the layout to use when the list of choices appears
+        // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-// Apply the adapter to the spinner jjj
+        // Apply the adapter to the spinner jjj
         spinner.setAdapter(adapter);
         spinner
                 .setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
