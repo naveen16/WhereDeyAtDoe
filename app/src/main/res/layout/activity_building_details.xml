@@ -62,7 +62,7 @@
         android:layout_marginTop="13dp"
         android:layout_toEndOf="@+id/imageView"
         android:layout_toRightOf="@+id/imageView"
-        android:textSize="18dp"
+        android:textSize="16dp"
         android:layout_x="132dp"
         android:layout_y="420dp"
         android:text="No prior data"
@@ -103,10 +103,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/popularityLabel"
         android:layout_marginTop="20dp"
-        android:layout_x="210dp"
+        android:layout_x="200dp"
         android:layout_y="240dp"
         android:text="No data"
-        android:textSize="18dp"
+        android:textSize="16dp"
         android:textStyle="bold" />
 
 </AbsoluteLayout>
