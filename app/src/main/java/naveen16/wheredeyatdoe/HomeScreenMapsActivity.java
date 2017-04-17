@@ -69,7 +69,12 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
+   // @Override
+//    public void onBackPressed(){
+//        Log.d("BACKPRESSED","back pressed");
+//        this.finish();
+//        System.exit(0);
+//    }
 
     /**
      * Manipulates the map once available.
@@ -85,12 +90,13 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         googleMap.setOnMarkerClickListener(this);
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
+
+
         LatLng cla = new LatLng(30.2849,-97.7355);
         buildingsLatLngs.put("College of Liberal Arts (CLA)",cla);
         Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
+        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
         info_set.put(claMarker, new String[]{"College of Liberal Arts (CLA)", "0623062306230623062308220822"});
         // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
 
@@ -123,7 +129,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         LatLng mai = new LatLng(30.286096, -97.73938);
         buildingsLatLngs.put("Main Building (MAI)",mai);
         Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
-        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "hours5"});
+        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "08220822082208220818cccc1422"});
 
         //adding a marker to Jackson Geological Sciences Building
         LatLng jgb = new LatLng(30.285821, -97.735745);
@@ -133,9 +139,9 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
         //adding a marker to Robert A. Welch Hall
         LatLng wel = new LatLng(30.286696, -97.737692);
-        buildingsLatLngs.put("Robert A. Welch Hall (WEL)",wel);
+        buildingsLatLngs.put("Robert A Welch Hall (WEL)",wel);
         Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
-        info_set.put(welMarker, new String[]{"Robert A. Welch Hall (WEL)", "08220822082208220818cccc1422"});
+        info_set.put(welMarker, new String[]{"Robert A Welch Hall (WEL)", "08220822082208220818cccc1422"});
 
         //adding a marker to Flawn Academic Center
         LatLng fac = new LatLng(30.286281, -97.740313);
@@ -145,9 +151,9 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
 
         //adding a marker to Jack S. Blanton Museum of Art
         LatLng bma = new LatLng(30.281014, -97.737473);
-        buildingsLatLngs.put("Jack S. Blanton Museum of Art (BMA)",bma);
+        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)",bma);
         Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
-        info_set.put(bmaMarker, new String[]{"Jack S. Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
+        info_set.put(bmaMarker, new String[]{"Jack S Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
 
         //adding a marker to Harry Ransom Center
         LatLng hrc = new LatLng(30.281014, -97.737473);
@@ -172,6 +178,19 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
         buildingsLatLngs.put("Waggener Hall (WAG)",wag);
         Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
         info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
+
+        Intent intent=getIntent();
+        Log.d("INTENT",intent.toString());
+        if(intent.getExtras()!=null){
+            String rBuildingName =intent.getExtras().getString("ReportBuilding");
+            Log.d("BUILDLATLONG",buildingsLatLngs.get(rBuildingName)+"   jj");
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(rBuildingName)));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(rBuildingName), 17));
+        }
+        else{
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
+        }
 
        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -297,16 +316,17 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
     @Override
     public boolean onMarkerClick(final Marker marker) {
         final String day = getDayoFWeek();
-
+        Log.d("NOTINIF","not in if");
         if(info_set.containsKey(marker)){ //This might be an unnecessary check, as we can assume existing markers ar ours
             //we want to say something akin to info = get_info(), info[0] = name, info[1] = hours
+            Log.d("Marker",marker.toString());
             String[] info = info_set.get(marker);
             final String name = info[0];
             final String hours = parseHours(info[1]);
 
             String [] options={"View Details","Report","Cancel"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Select an option")
+            builder.setTitle(name)
                     .setItems(options,new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which){
                             if(which==0){

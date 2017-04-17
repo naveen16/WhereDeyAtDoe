@@ -102,7 +102,9 @@ public class ReportActivity extends AppCompatActivity {
                                 mDatabase.child(name).push().setValue(newR);
                                 mDatabase.child("history").child(name).push().setValue(newR);
                                 Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
+                                intent2.putExtra("ReportBuilding",name);
                                 startActivity(intent2);
+                                finish();
 
 
                             }
