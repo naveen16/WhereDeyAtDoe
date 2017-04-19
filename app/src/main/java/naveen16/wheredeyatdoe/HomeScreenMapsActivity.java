@@ -1,17 +1,16 @@
 package naveen16.wheredeyatdoe;
 
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,7 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class HomeScreenMapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
 
@@ -59,6 +58,10 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     TileProvider mProvider;
     TileOverlay mOverlay;
 
+    double[] loc = new double[2];
+
+    private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,37 +72,42 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         reportList=new ArrayList<Report>();
         historyRList=new ArrayList<Report>();
         buildingsHistoryMap=new HashMap<String, String>();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_ACCESS_COARSE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("INSIDEONREQUEST","INSIDE ON REQUEST");
+                    loc = getLocation();
+                    setUpUserMarker();
+                    // All good!
+                } else {
+                    Toast.makeText(this, "Need your location!", Toast.LENGTH_SHORT).show();
+                }
 
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        FragmentManager fm = getFragmentManager();
-        switch (item.getItemId()) {
-            case R.id.instructions:
-                Intent intent=new Intent(HomeScreenMapsActivity.this, InstructionsActivity.class);
-                startActivity(intent);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+                break;
         }
     }
-   // @Override
-//    public void onBackPressed(){
-//        Log.d("BACKPRESSED","back pressed");
-//        this.finish();
-//        System.exit(0);
-//    }
+
+
+    public void setUpUserMarker(){
+        Log.d("USERSLOCATION",""+loc[0]+" "+loc[1]);
+        //adding a marker for users location
+        LatLng user = new LatLng(loc[0],loc[1]);
+        Marker userMarker = mMap.addMarker(new MarkerOptions().position(user).title("User Marker"));
+        Log.d("USERMARKER","USER MARKER TITLE: "+userMarker.getTitle());
+    }
+
 
     /**
      * Manipulates the map once available.
@@ -115,13 +123,23 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         googleMap.setOnMarkerClickListener(this);
         mMap = googleMap;
 
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
+                    PERMISSION_ACCESS_COARSE_LOCATION);
+        }
+        else{
+            //loc = getLocation();
+            Log.d("INELSEMARKER","IN ELSE OF MARKER");
+            setUpUserMarker();
+        }
 
-
+        // Add a marker in Sydney and move the camera
         LatLng cla = new LatLng(30.2849,-97.7355);
         buildingsLatLngs.put("College of Liberal Arts (CLA)",cla);
         Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
-        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(cla));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cla, 17));
         info_set.put(claMarker, new String[]{"College of Liberal Arts (CLA)", "0623062306230623062308220822"});
         // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
 
@@ -154,7 +172,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         LatLng mai = new LatLng(30.286096, -97.73938);
         buildingsLatLngs.put("Main Building (MAI)",mai);
         Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
-        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "08220822082208220818cccc1422"});
+        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "hours5"});
 
         //adding a marker to Jackson Geological Sciences Building
         LatLng jgb = new LatLng(30.285821, -97.735745);
@@ -164,9 +182,9 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
         //adding a marker to Robert A. Welch Hall
         LatLng wel = new LatLng(30.286696, -97.737692);
-        buildingsLatLngs.put("Robert A Welch Hall (WEL)",wel);
+        buildingsLatLngs.put("Robert A. Welch Hall (WEL)",wel);
         Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
-        info_set.put(welMarker, new String[]{"Robert A Welch Hall (WEL)", "08220822082208220818cccc1422"});
+        info_set.put(welMarker, new String[]{"Robert A. Welch Hall (WEL)", "08220822082208220818cccc1422"});
 
         //adding a marker to Flawn Academic Center
         LatLng fac = new LatLng(30.286281, -97.740313);
@@ -176,9 +194,9 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
         //adding a marker to Jack S. Blanton Museum of Art
         LatLng bma = new LatLng(30.281014, -97.737473);
-        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)",bma);
+        buildingsLatLngs.put("Jack S. Blanton Museum of Art (BMA)",bma);
         Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
-        info_set.put(bmaMarker, new String[]{"Jack S Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
+        info_set.put(bmaMarker, new String[]{"Jack S. Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
 
         //adding a marker to Harry Ransom Center
         LatLng hrc = new LatLng(30.281014, -97.737473);
@@ -204,18 +222,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
         info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
 
-        Intent intent=getIntent();
-        Log.d("INTENT",intent.toString());
-        if(intent.getExtras()!=null){
-            String rBuildingName =intent.getExtras().getString("ReportBuilding");
-            Log.d("BUILDLATLONG",buildingsLatLngs.get(rBuildingName)+"   jj");
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(rBuildingName)));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(rBuildingName), 17));
-        }
-        else{
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
-        }
 
        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -341,17 +347,16 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     @Override
     public boolean onMarkerClick(final Marker marker) {
         final String day = getDayoFWeek();
-        Log.d("NOTINIF","not in if");
+
         if(info_set.containsKey(marker)){ //This might be an unnecessary check, as we can assume existing markers ar ours
             //we want to say something akin to info = get_info(), info[0] = name, info[1] = hours
-            Log.d("Marker",marker.toString());
             String[] info = info_set.get(marker);
             final String name = info[0];
             final String hours = parseHours(info[1]);
 
             String [] options={"View Details","Report","Cancel"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(name)
+            builder.setTitle("Select an option")
                     .setItems(options,new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which){
                             if(which==0){
@@ -492,4 +497,13 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
         return b%12 + ":00" + TS1 + " - " + e%12 + ":00" + TS2;
     }
+
+    public double[] getLocation(){
+        GPSTracker gps = new GPSTracker(this);
+        double latitude = gps.getLatitude();
+        double longitude = gps.getLongitude();
+        Log.d("PhoneLocation",""+latitude+" "+longitude);
+        return new double[]{latitude,longitude};
+    }
+
 }
