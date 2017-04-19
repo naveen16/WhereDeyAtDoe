@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_instructions"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/grey"
+    tools:context="naveen16.wheredeyatdoe.InstructionsActivity">
+
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="fill_parent"
+        android:layout_height="80sp"
+        android:layout_centerHorizontal="true"
+        android:height="50dp"
+        android:fontFamily="serif"
+        android:gravity="center"
+        android:text="Instructions"
+        android:textSize="25sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="400sp"
+        android:inputType="textMultiLine"
+        android:layout_below="@id/instructions"
+        android:text="- This app shows how crowded areas of UT campus are \n\n- A red heatmap on the building indicates a building is very crowded, yellow means mildly crowded, and green means not crowded\n\n - A user can report how crowded a building is by clicking on the building, these reports are valid for 1 hour \n\n - Users can also view details of the building which includes the hours, history, and current popularity"
+        android:id="@+id/instructionsText" />
+</RelativeLayout>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">WhereDeyAtDoe</string>
     <string name="title_activity_home_screen_maps">Map</string>
+    <string name="instructions">instructions</string>
     <string-array name="Crowded_Options">
         <item>Not Crowded</item>
         <item>Slightly Crowded</item>

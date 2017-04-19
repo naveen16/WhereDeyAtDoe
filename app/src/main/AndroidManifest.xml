@@ -28,20 +28,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".HomeScreenMapsActivity">
-
-        </activity>
+        <activity android:name=".HomeScreenMapsActivity"></activity>
         <activity android:name=".BuildingDetailsActivity" />
         <activity android:name=".ReportActivity" />
         <activity android:name=".Splash">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
-
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".InstructionsActivity"></activity>
     </application>
 
 </manifest>
