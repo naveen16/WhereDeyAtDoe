@@ -129,7 +129,7 @@ public class HomeScreenMapsActivity extends FragmentActivity implements OnMapRea
                     PERMISSION_ACCESS_COARSE_LOCATION);
         }
         else{
-            //loc = getLocation();
+            loc = getLocation();
             Log.d("INELSEMARKER","IN ELSE OF MARKER");
             setUpUserMarker();
         }
