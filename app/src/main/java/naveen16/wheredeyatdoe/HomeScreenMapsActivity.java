@@ -57,6 +57,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
 
     List<Report> reportList;
+    List<Report> reportList2;
     List<Report> historyRList;
 
     TileProvider mProvider;
@@ -70,10 +71,32 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_maps);
+        loadMap();
+//        setContentView(R.layout.activity_home_screen_maps);
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
+//        buildingsMap=new HashMap<String, String>();
+//        buildingsLatLngs=new HashMap<String, LatLng>();
+//        reportList=new ArrayList<Report>();
+//        reportList2=new ArrayList<Report>();
+//        historyRList=new ArrayList<Report>();
+//        buildingsHistoryMap=new HashMap<String, String>();
+//
+//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+//                .findFragmentById(R.id.map);
+//        mapFragment.getMapAsync(this);
+
+
+
+    }
+
+    private void loadMap(){
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         buildingsMap=new HashMap<String, String>();
         buildingsLatLngs=new HashMap<String, LatLng>();
         reportList=new ArrayList<Report>();
+        reportList2=new ArrayList<Report>();
         historyRList=new ArrayList<Report>();
         buildingsHistoryMap=new HashMap<String, String>();
 
@@ -81,9 +104,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -381,7 +401,8 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
             String [] options={"View Details","Report","Cancel"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Select an option")
+            //builder.setTitle("Select an option")
+            builder.setTitle(name)
                     .setItems(options,new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which){
                             if(which==0){
@@ -399,9 +420,76 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                 startActivity(intent);
                             }
                             if(which==1){
-                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
-                                intent.putExtra("NAME",name);
-                                startActivity(intent);
+//                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
+//                                intent.putExtra("NAME",name);
+//                                startActivity(intent);
+                                String [] options={"1","2","3","4","5"};
+                                final AlertDialog.Builder builder2 = new AlertDialog.Builder(builder.getContext());
+                                builder.setTitle("Select an option")
+                                        .setItems(options,new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which){
+                                                if(which==0){
+                                                    final String selectedLvl=getLvlFromNum(which+1);
+                                                    mDatabase.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            Log.d("GREENYELLOW","Reached Green yellow color method");
+                                                            Log.d("DATACHILD",dataSnapshot.getChildrenCount()+"");
+
+                                                            Log.d("DATAKEY",dataSnapshot.getKey());
+
+                                                            Log.d("DATANAME",name);
+
+                                                            for( DataSnapshot child: dataSnapshot.getChildren()){
+                                                                if(!child.getKey().equals("total_value")) {
+                                                                    Report rep = child.getValue(Report.class);
+                                                                    reportList2.add(rep);
+                                                                }
+
+
+                                                            }
+                                                            int total=0;
+                                                            for(int i=0;i<reportList2.size();i++){
+                                                                Report R=reportList2.get(i);
+                                                                total+=getNumFromLvl(R.getLevel());
+                                                            }
+                                                            Log.d("REPORTLIST",reportList2.toString());
+                                                            Report newR=new Report(selectedLvl,new Date());
+                                                            mDatabase.child(name).push().setValue(newR);
+                                                            mDatabase.child("history").child(name).push().setValue(newR);
+//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
+//                                                            intent2.putExtra("ReportBuilding",name);
+//                                                            startActivity(intent2);
+//                                                            finish();
+                                                            loadMap();
+
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            // Getting Post failed, log a message
+                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                            // ...
+                                                        }
+                                                    });
+                                                }
+                                                if(which==1){
+                                                    String selectedLvl=getLvlFromNum(which+1);
+                                                }
+                                                if(which==2){
+                                                    String selectedLvl=getLvlFromNum(which+1);
+                                                }
+                                                if(which==3){
+                                                    String selectedLvl=getLvlFromNum(which+1);
+                                                }
+                                                if(which==4){
+                                                    String selectedLvl=getLvlFromNum(which+1);
+                                                }
+
+                                            }
+                                        });
+                                builder.create().show();
                             }
 
                         }
@@ -530,5 +618,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         Log.d("PhoneLocation",""+latitude+" "+longitude);
         return new double[]{latitude,longitude};
     }
+
 
 }
