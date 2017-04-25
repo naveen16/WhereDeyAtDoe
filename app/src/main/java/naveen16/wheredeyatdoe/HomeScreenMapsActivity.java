@@ -1,11 +1,13 @@
 package naveen16.wheredeyatdoe;
 
 import android.app.FragmentManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -14,8 +16,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -33,6 +42,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,19 +52,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        ResultCallback<Status> {
+
 
     private GoogleMap mMap;
 
     HashMap<Marker, String[]> info_set = new HashMap<>();
 
 
-
     private DatabaseReference mDatabase;
 
-    private Map<String,String> buildingsMap;
-    private Map<String,LatLng> buildingsLatLngs;
-    private Map<String,String> buildingsHistoryMap;
+    private Map<String, String> buildingsMap;
+    private Map<String, LatLng> buildingsLatLngs;
+    private Map<String, String> buildingsHistoryMap;
 
 
     List<Report> reportList;
@@ -63,9 +77,14 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     TileProvider mProvider;
     TileOverlay mOverlay;
 
-    String lastBuilding="default";
+    String lastBuilding = "default";
 
     double[] loc = new double[2];
+
+    protected ArrayList<Geofence> mGeofenceList;
+    protected GoogleApiClient mGoogleApiClient;
+    private Button mAddGeofencesButton;
+
 
     private static final int PERMISSION_ACCESS_COARSE_LOCATION = 1;
 
@@ -73,7 +92,17 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen_maps);
+
         loadMap();
+        //mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
+        // Empty list for storing geofences.
+        mGeofenceList = new ArrayList<Geofence>();
+
+        // Get the geofences used. Geofence data is hard coded in this sample.
+        populateGeofenceList();
+
+        // Kick off the request to build GoogleApiClient.
+        buildGoogleApiClient();
 //        setContentView(R.layout.activity_home_screen_maps);
 //        mDatabase = FirebaseDatabase.getInstance().getReference();
 //        buildingsMap=new HashMap<String, String>();
@@ -89,18 +118,113 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 //        mapFragment.getMapAsync(this);
 
 
+    }
+
+    public void populateGeofenceList() {
+        for (Map.Entry<String, LatLng> entry : Constants.LANDMARKS.entrySet()) {
+            mGeofenceList.add(new Geofence.Builder()
+                    .setRequestId(entry.getKey())
+                    .setCircularRegion(
+                            entry.getValue().latitude,
+                            entry.getValue().longitude,
+                            Constants.GEOFENCE_RADIUS_IN_METERS
+                    )
+                    .setExpirationDuration(Constants.GEOFENCE_EXPIRATION_IN_MILLISECONDS)
+                    .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
+                            Geofence.GEOFENCE_TRANSITION_EXIT)
+                    .build());
+        }
+    }
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+    @Override
+    public void onConnected(Bundle connectionHint) {
 
     }
 
-    private void loadMap(){
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        // Do something with result.getErrorCode());
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        mGoogleApiClient.connect();
+    }
+
+    public void onResult(Status status) {
+        if (status.isSuccess()) {
+            Toast.makeText(
+                    this,
+                    "Geofences Added",
+                    Toast.LENGTH_SHORT
+            ).show();
+        } else {
+            // Get the status code for the error and log it using a user-friendly message.
+            //String errorMessage = GeofenceErrorMessages.getErrorString(this,
+                    //status.getStatusCode());
+        }
+    }
+    public void addGeofencesHandler(View view) {
+        if (!mGoogleApiClient.isConnected()) {
+            Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            LocationServices.GeofencingApi.addGeofences(
+                    mGoogleApiClient,
+                    getGeofencingRequest(),
+                    getGeofencePendingIntent()
+            ).setResultCallback(this); // Result processed in onResult().
+        } catch (SecurityException securityException) {
+            // Catch exception generated if the app does not use ACCESS_FINE_LOCATION permission.
+        }
+    }
+
+    private GeofencingRequest getGeofencingRequest() {
+
+        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.addGeofences(mGeofenceList);
+        return builder.build();
+    }
+
+    private PendingIntent getGeofencePendingIntent() {
+        Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
+        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling addgeoFences()
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    private void loadMap() {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        buildingsMap=new HashMap<String, String>();
-        buildingsLatLngs=new HashMap<String, LatLng>();
-        reportList=new ArrayList<Report>();
-        reportList2=new ArrayList<Report>();
-        historyRList=new ArrayList<Report>();
-        buildingsHistoryMap=new HashMap<String, String>();
+        buildingsMap = new HashMap<String, String>();
+        buildingsLatLngs = new HashMap<String, LatLng>();
+        reportList = new ArrayList<Report>();
+        reportList2 = new ArrayList<Report>();
+        historyRList = new ArrayList<Report>();
+        buildingsHistoryMap = new HashMap<String, String>();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -115,11 +239,12 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         FragmentManager fm = getFragmentManager();
         switch (item.getItemId()) {
             case R.id.instructions:
-                Intent intent=new Intent(HomeScreenMapsActivity.this,
+                Intent intent = new Intent(HomeScreenMapsActivity.this,
                         InstructionsActivity.class);
                 startActivity(intent);
                 return true;
@@ -134,7 +259,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         switch (requestCode) {
             case PERMISSION_ACCESS_COARSE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("INSIDEONREQUEST","INSIDE ON REQUEST");
+                    Log.d("INSIDEONREQUEST", "INSIDE ON REQUEST");
                     loc = getLocation();
                     setUpUserMarker();
                     // All good!
@@ -147,12 +272,12 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     }
 
 
-    public void setUpUserMarker(){
-        Log.d("USERSLOCATION",""+loc[0]+" "+loc[1]);
+    public void setUpUserMarker() {
+        Log.d("USERSLOCATION", "" + loc[0] + " " + loc[1]);
         //adding a marker for users location
-        LatLng user = new LatLng(loc[0],loc[1]);
+        LatLng user = new LatLng(loc[0], loc[1]);
         Marker userMarker = mMap.addMarker(new MarkerOptions().position(user).title("User Marker"));
-        Log.d("USERMARKER","USER MARKER TITLE: "+userMarker.getTitle());
+        Log.d("USERMARKER", "USER MARKER TITLE: " + userMarker.getTitle());
     }
 
 
@@ -172,64 +297,62 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_ACCESS_COARSE_LOCATION);
-        }
-        else{
+        } else {
             loc = getLocation();
-            Log.d("INELSEMARKER","IN ELSE OF MARKER");
+            Log.d("INELSEMARKER", "IN ELSE OF MARKER");
             setUpUserMarker();
         }
 
 
-
         // Add a marker in Sydney and move the camera
-        LatLng cla = new LatLng(30.2849,-97.7355);
-        buildingsLatLngs.put("College of Liberal Arts (CLA)",cla);
+        LatLng cla = new LatLng(30.2849, -97.7355);
+        buildingsLatLngs.put("College of Liberal Arts (CLA)", cla);
         Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
         info_set.put(claMarker, new String[]{"College of Liberal Arts (CLA)", "0623062306230623062308220822"});
         // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
 
 
         //adding a marker to gregory gym
-        LatLng gregoryGym = new LatLng(30.2842,-97.7365);
-        buildingsLatLngs.put("Gregory Gymnasium",gregoryGym);
+        LatLng gregoryGym = new LatLng(30.2842, -97.7365);
+        buildingsLatLngs.put("Gregory Gymnasium", gregoryGym);
         Marker gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
         info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "0601060106010601062208221001"});
 
         //adding a marker to pcl library
         LatLng pcl = new LatLng(30.2827, -97.7381);
-        buildingsLatLngs.put("Perry Castaneda Library (PCL)",pcl);
+        buildingsLatLngs.put("Perry Castaneda Library (PCL)", pcl);
         Marker pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
         info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "2424242424242424002310231124"});
 
         //adding a marker to SAC
         LatLng sac = new LatLng(30.2849, -97.7360);
-        buildingsLatLngs.put("Student Activity Center (SAC)",sac);
+        buildingsLatLngs.put("Student Activity Center (SAC)", sac);
         Marker sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
         info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "07170717071707170717cccccccc"});
 
         //adding a marker to GDC
         LatLng gdc = new LatLng(30.28628, -97.73662);
-        buildingsLatLngs.put("Gates Dell Complex (GDC)",gdc);
+        buildingsLatLngs.put("Gates Dell Complex (GDC)", gdc);
         Marker gdcMarker = mMap.addMarker(new MarkerOptions().position(gdc).title("GDC"));
         info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "2424242424242424242424242424"});
 
         //adding a marker to UT Tower
         LatLng mai = new LatLng(30.286096, -97.73938);
-        buildingsLatLngs.put("Main Building (MAI)",mai);
+        buildingsLatLngs.put("Main Building (MAI)", mai);
         Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
         info_set.put(maiMarker, new String[]{"Main Building (MAI)", "2424242424242424242424242424"});
 
         //adding a marker to Jackson Geological Sciences Building
         LatLng jgb = new LatLng(30.285821, -97.735745);
-        buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)",jgb);
+        buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)", jgb);
         Marker jgbMarker = mMap.addMarker(new MarkerOptions().position(jgb).title("JGB"));
         info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "08220822082208220818cccc1422"});
 
         //adding a marker to Robert A. Welch Hall
         LatLng wel = new LatLng(30.286696, -97.737692);
-        buildingsLatLngs.put("Robert A Welch Hall (WEL)",wel);
+        buildingsLatLngs.put("Robert A Welch Hall (WEL)", wel);
         Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
@@ -237,61 +360,60 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
         //adding a marker to Flawn Academic Center
         LatLng fac = new LatLng(30.286281, -97.740313);
-        buildingsLatLngs.put("Flawn Academic Hall (FAC)",fac);
+        buildingsLatLngs.put("Flawn Academic Hall (FAC)", fac);
         Marker facMarker = mMap.addMarker(new MarkerOptions().position(fac).title("FAC"));
         info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "2424242424242424002210220022"});
 
         //adding a marker to Jack S. Blanton Museum of Art
         LatLng bma = new LatLng(30.281014, -97.737473);
-        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)",bma);
+        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)", bma);
         Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
         info_set.put(bmaMarker, new String[]{"Jack S Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
 
         //adding a marker to Harry Ransom Center
         LatLng hrc = new LatLng(30.281014, -97.737473);
-        buildingsLatLngs.put("Harry Ransom Center (HRC)",hrc);
+        buildingsLatLngs.put("Harry Ransom Center (HRC)", hrc);
         Marker hrcMarker = mMap.addMarker(new MarkerOptions().position(hrc).title("HRC"));
         info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "1017101710171019101712171217"});
 
         //adding a marker to Jester City Limits
         LatLng jcl = new LatLng(30.282806, -97.736771);
-        buildingsLatLngs.put("Jester City Limits (JCL)",jcl);
+        buildingsLatLngs.put("Jester City Limits (JCL)", jcl);
         Marker jclMarker = mMap.addMarker(new MarkerOptions().position(jcl).title("JCL"));
         info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "0723072307230723072109200923"});
 
         //adding a marker to South Mall
         LatLng sou = new LatLng(30.284373, -97.739572);
-        buildingsLatLngs.put("South Mall (SOU)",sou);
+        buildingsLatLngs.put("South Mall (SOU)", sou);
         Marker souMarker = mMap.addMarker(new MarkerOptions().position(sou).title("SOU"));
         info_set.put(souMarker, new String[]{"South Mall (SOU)", "2424242424242424242424242424"});
 
         //adding a marker to Waggener Hall
         LatLng wag = new LatLng(30.284995, -97.737630);
-        buildingsLatLngs.put("Waggener Hall (WAG)",wag);
+        buildingsLatLngs.put("Waggener Hall (WAG)", wag);
         Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
         info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
 
-        if(!lastBuilding.equals("default")){
+        if (!lastBuilding.equals("default")) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(lastBuilding)));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(lastBuilding), 17));
-        }
-        else{
+        } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
         }
 
 
-       mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("GREENYELLOW","Reached Green yellow color method");
-                for( DataSnapshot child: dataSnapshot.getChildren()) {
+                Log.d("GREENYELLOW", "Reached Green yellow color method");
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
                     reportList = new ArrayList<Report>();
-                    historyRList=new ArrayList<Report>();
+                    historyRList = new ArrayList<Report>();
                     Log.d("OUTERLOOPKEY", child.getKey());
                     Log.d("OUTERLOOPVAL", child.getValue().toString());
 
-                    if (!child.getKey().equals("history")){
+                    if (!child.getKey().equals("history")) {
                         String level = "";
                         for (DataSnapshot child2 : child.getChildren()) {
                             Log.d("INNERLOOPKEY", child2.getKey());
@@ -303,7 +425,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                 Date repDate = rep.getTimeOfEntry();
                                 if (currDate.getHours() - repDate.getHours() > 1 || currDate.getDay() != repDate.getDay()) {
                                     child2.getRef().removeValue();
-                            }   else
+                                } else
                                     reportList.add(rep);
 
                             }
@@ -325,7 +447,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                     }
                     //read history
                     else {
-                        Log.d("CKEY",child.getKey());
+                        Log.d("CKEY", child.getKey());
                         for (DataSnapshot child2 : child.getChildren()) {
                             Log.d("OUTERLOOPKEYHISTORY", child2.getKey());
                             Log.d("OUTERLOOPVALHISTORY", child2.getValue().toString());
@@ -347,10 +469,10 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                 Report R = historyRList.get(i);
                                 total += getNumFromLvl(R.getLevel());
                             }
-                            int finalavg=0;
-                            if(historyRList.size() !=0)
+                            int finalavg = 0;
+                            if (historyRList.size() != 0)
                                 finalavg = (total) / (historyRList.size());
-                            buildingsHistoryMap.put(child2.getKey(),getLvlFromNum(finalavg));
+                            buildingsHistoryMap.put(child2.getKey(), getLvlFromNum(finalavg));
                         }
                     }
 
@@ -368,11 +490,11 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
 
     }
-    public int getNumFromLvl(String selectedLvl){
-        if (selectedLvl.equals("No prior data")){
+
+    public int getNumFromLvl(String selectedLvl) {
+        if (selectedLvl.equals("No prior data")) {
             return 0;
-        }
-        else if (selectedLvl.equals("Not Crowded")) {
+        } else if (selectedLvl.equals("Not Crowded")) {
             return 1;
         } else if (selectedLvl.equals("Slightly Crowded")) {
             return 2;
@@ -384,11 +506,11 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             return 5;
         }
     }
-    public String getLvlFromNum(int newAvg){
-        if(newAvg==0){
+
+    public String getLvlFromNum(int newAvg) {
+        if (newAvg == 0) {
             return "No prior data";
-        }
-        else if (newAvg == 1) {
+        } else if (newAvg == 1) {
             return "Not Crowded";
         } else if (newAvg == 2) {
             return "Slightly Crowded";
@@ -406,123 +528,75 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     public boolean onMarkerClick(final Marker marker) {
         final String day = getDayoFWeek();
 
-        if(info_set.containsKey(marker)){ //This might be an unnecessary check, as we can assume existing markers ar ours
+        if (info_set.containsKey(marker)) { //This might be an unnecessary check, as we can assume existing markers ar ours
             //we want to say something akin to info = get_info(), info[0] = name, info[1] = hours
             String[] info = info_set.get(marker);
             final String name = info[0];
             final String hours = parseHours(info[1]);
 
-            String [] options={"View Details","Report","Cancel"};
+            String[] options = {"View Details", "Report", "Cancel"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             //builder.setTitle("Select an option")
             builder.setTitle(name)
-                    .setItems(options,new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which){
-                            if(which==0){
-                                Intent intent = new Intent(HomeScreenMapsActivity.this,BuildingDetailsActivity.class);
-                                intent.putExtra("NAME",name);
-                                intent.putExtra("HOURS",hours);
-                                if(buildingsMap.get(name) == null)
-                                    intent.putExtra("POPULARITY","No Current Data");
+                    .setItems(options, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                Intent intent = new Intent(HomeScreenMapsActivity.this, BuildingDetailsActivity.class);
+                                intent.putExtra("NAME", name);
+                                intent.putExtra("HOURS", hours);
+                                if (buildingsMap.get(name) == null)
+                                    intent.putExtra("POPULARITY", "No Current Data");
                                 else
-                                    intent.putExtra("POPULARITY",buildingsMap.get(name));
-                                if(buildingsHistoryMap.get(name) == null)
-                                    intent.putExtra("HISTORY","No Prior Data");
+                                    intent.putExtra("POPULARITY", buildingsMap.get(name));
+                                if (buildingsHistoryMap.get(name) == null)
+                                    intent.putExtra("HISTORY", "No Prior Data");
                                 else
-                                    intent.putExtra("HISTORY",buildingsHistoryMap.get(name));
+                                    intent.putExtra("HISTORY", buildingsHistoryMap.get(name));
                                 startActivity(intent);
                             }
-                            if(which==1){
+                            if (which == 1) {
 //                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
 //                                intent.putExtra("NAME",name);
 //                                startActivity(intent);
-                                String [] options={"1","2","3","4","5"};
+                                String[] options = {"1", "2", "3", "4", "5"};
                                 final AlertDialog.Builder builder2 = new AlertDialog.Builder(builder.getContext());
                                 builder.setTitle("Select an option")
-                                        .setItems(options,new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int which){
-                                                if(which==0){
-                                                    final String selectedLvl=getLvlFromNum(which+1);
+                                        .setItems(options, new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                if (which == 0) {
+                                                    final String selectedLvl = getLvlFromNum(which + 1);
                                                     mDatabase.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Log.d("GREENYELLOW","Reached Green yellow color method");
-                                                            Log.d("DATACHILD",dataSnapshot.getChildrenCount()+"");
+                                                            Log.d("GREENYELLOW", "Reached Green yellow color method");
+                                                            Log.d("DATACHILD", dataSnapshot.getChildrenCount() + "");
 
-                                                            Log.d("DATAKEY",dataSnapshot.getKey());
+                                                            Log.d("DATAKEY", dataSnapshot.getKey());
 
-                                                            Log.d("DATANAME",name);
+                                                            Log.d("DATANAME", name);
 
-                                                            for( DataSnapshot child: dataSnapshot.getChildren()){
-                                                                if(!child.getKey().equals("total_value")) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if (!child.getKey().equals("total_value")) {
                                                                     Report rep = child.getValue(Report.class);
                                                                     reportList2.add(rep);
                                                                 }
 
 
                                                             }
-                                                            int total=0;
-                                                            for(int i=0;i<reportList2.size();i++){
-                                                                Report R=reportList2.get(i);
-                                                                total+=getNumFromLvl(R.getLevel());
+                                                            int total = 0;
+                                                            for (int i = 0; i < reportList2.size(); i++) {
+                                                                Report R = reportList2.get(i);
+                                                                total += getNumFromLvl(R.getLevel());
                                                             }
-                                                            Log.d("REPORTLIST",reportList2.toString());
-                                                            Report newR=new Report(selectedLvl,new Date());
+                                                            Log.d("REPORTLIST", reportList2.toString());
+                                                            Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
 //                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
 //                                                            intent2.putExtra("ReportBuilding",name);
 //                                                            startActivity(intent2);
 //                                                            finish();
-                                                            lastBuilding=name;
-                                                            loadMap();
-
-
-
-                                                        }
-
-                                                        @Override
-                                                        public void onCancelled(DatabaseError databaseError) {
-                                                            // Getting Post failed, log a message
-                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
-                                                            // ...
-                                                        }
-                                                    });
-                                                }
-                                                if(which==1){
-                                                    final String selectedLvl=getLvlFromNum(which+1);
-                                                    mDatabase.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
-                                                        @Override
-                                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Log.d("GREENYELLOW","Reached Green yellow color method");
-                                                            Log.d("DATACHILD",dataSnapshot.getChildrenCount()+"");
-
-                                                            Log.d("DATAKEY",dataSnapshot.getKey());
-
-                                                            Log.d("DATANAME",name);
-
-                                                            for( DataSnapshot child: dataSnapshot.getChildren()){
-                                                                if(!child.getKey().equals("total_value")) {
-                                                                    Report rep = child.getValue(Report.class);
-                                                                    reportList2.add(rep);
-                                                                }
-
-
-                                                            }
-                                                            int total=0;
-                                                            for(int i=0;i<reportList2.size();i++){
-                                                                Report R=reportList2.get(i);
-                                                                total+=getNumFromLvl(R.getLevel());
-                                                            }
-                                                            Log.d("REPORTLIST",reportList2.toString());
-                                                            Report newR=new Report(selectedLvl,new Date());
-                                                            mDatabase.child(name).push().setValue(newR);
-                                                            mDatabase.child("history").child(name).push().setValue(newR);
-//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
-//                                                            intent2.putExtra("ReportBuilding",name);
-//                                                            startActivity(intent2);
-//                                                            finish();
-                                                            lastBuilding=name;
+                                                            lastBuilding = name;
                                                             loadMap();
 
 
@@ -536,40 +610,40 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                         }
                                                     });
                                                 }
-                                                if(which==2){
-                                                    final String selectedLvl=getLvlFromNum(which+1);
+                                                if (which == 1) {
+                                                    final String selectedLvl = getLvlFromNum(which + 1);
                                                     mDatabase.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Log.d("GREENYELLOW","Reached Green yellow color method");
-                                                            Log.d("DATACHILD",dataSnapshot.getChildrenCount()+"");
+                                                            Log.d("GREENYELLOW", "Reached Green yellow color method");
+                                                            Log.d("DATACHILD", dataSnapshot.getChildrenCount() + "");
 
-                                                            Log.d("DATAKEY",dataSnapshot.getKey());
+                                                            Log.d("DATAKEY", dataSnapshot.getKey());
 
-                                                            Log.d("DATANAME",name);
+                                                            Log.d("DATANAME", name);
 
-                                                            for( DataSnapshot child: dataSnapshot.getChildren()){
-                                                                if(!child.getKey().equals("total_value")) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if (!child.getKey().equals("total_value")) {
                                                                     Report rep = child.getValue(Report.class);
                                                                     reportList2.add(rep);
                                                                 }
 
 
                                                             }
-                                                            int total=0;
-                                                            for(int i=0;i<reportList2.size();i++){
-                                                                Report R=reportList2.get(i);
-                                                                total+=getNumFromLvl(R.getLevel());
+                                                            int total = 0;
+                                                            for (int i = 0; i < reportList2.size(); i++) {
+                                                                Report R = reportList2.get(i);
+                                                                total += getNumFromLvl(R.getLevel());
                                                             }
-                                                            Log.d("REPORTLIST",reportList2.toString());
-                                                            Report newR=new Report(selectedLvl,new Date());
+                                                            Log.d("REPORTLIST", reportList2.toString());
+                                                            Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
 //                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
 //                                                            intent2.putExtra("ReportBuilding",name);
 //                                                            startActivity(intent2);
 //                                                            finish();
-                                                            lastBuilding=name;
+                                                            lastBuilding = name;
                                                             loadMap();
 
 
@@ -583,40 +657,40 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                         }
                                                     });
                                                 }
-                                                if(which==3){
-                                                    final String selectedLvl=getLvlFromNum(which+1);
+                                                if (which == 2) {
+                                                    final String selectedLvl = getLvlFromNum(which + 1);
                                                     mDatabase.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Log.d("GREENYELLOW","Reached Green yellow color method");
-                                                            Log.d("DATACHILD",dataSnapshot.getChildrenCount()+"");
+                                                            Log.d("GREENYELLOW", "Reached Green yellow color method");
+                                                            Log.d("DATACHILD", dataSnapshot.getChildrenCount() + "");
 
-                                                            Log.d("DATAKEY",dataSnapshot.getKey());
+                                                            Log.d("DATAKEY", dataSnapshot.getKey());
 
-                                                            Log.d("DATANAME",name);
+                                                            Log.d("DATANAME", name);
 
-                                                            for( DataSnapshot child: dataSnapshot.getChildren()){
-                                                                if(!child.getKey().equals("total_value")) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if (!child.getKey().equals("total_value")) {
                                                                     Report rep = child.getValue(Report.class);
                                                                     reportList2.add(rep);
                                                                 }
 
 
                                                             }
-                                                            int total=0;
-                                                            for(int i=0;i<reportList2.size();i++){
-                                                                Report R=reportList2.get(i);
-                                                                total+=getNumFromLvl(R.getLevel());
+                                                            int total = 0;
+                                                            for (int i = 0; i < reportList2.size(); i++) {
+                                                                Report R = reportList2.get(i);
+                                                                total += getNumFromLvl(R.getLevel());
                                                             }
-                                                            Log.d("REPORTLIST",reportList2.toString());
-                                                            Report newR=new Report(selectedLvl,new Date());
+                                                            Log.d("REPORTLIST", reportList2.toString());
+                                                            Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
 //                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
 //                                                            intent2.putExtra("ReportBuilding",name);
 //                                                            startActivity(intent2);
 //                                                            finish();
-                                                            lastBuilding=name;
+                                                            lastBuilding = name;
                                                             loadMap();
 
 
@@ -630,40 +704,87 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                         }
                                                     });
                                                 }
-                                                if(which==4){
-                                                    final String selectedLvl=getLvlFromNum(which+1);
+                                                if (which == 3) {
+                                                    final String selectedLvl = getLvlFromNum(which + 1);
                                                     mDatabase.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                                                         @Override
                                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                                            Log.d("GREENYELLOW","Reached Green yellow color method");
-                                                            Log.d("DATACHILD",dataSnapshot.getChildrenCount()+"");
+                                                            Log.d("GREENYELLOW", "Reached Green yellow color method");
+                                                            Log.d("DATACHILD", dataSnapshot.getChildrenCount() + "");
 
-                                                            Log.d("DATAKEY",dataSnapshot.getKey());
+                                                            Log.d("DATAKEY", dataSnapshot.getKey());
 
-                                                            Log.d("DATANAME",name);
+                                                            Log.d("DATANAME", name);
 
-                                                            for( DataSnapshot child: dataSnapshot.getChildren()){
-                                                                if(!child.getKey().equals("total_value")) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if (!child.getKey().equals("total_value")) {
                                                                     Report rep = child.getValue(Report.class);
                                                                     reportList2.add(rep);
                                                                 }
 
 
                                                             }
-                                                            int total=0;
-                                                            for(int i=0;i<reportList2.size();i++){
-                                                                Report R=reportList2.get(i);
-                                                                total+=getNumFromLvl(R.getLevel());
+                                                            int total = 0;
+                                                            for (int i = 0; i < reportList2.size(); i++) {
+                                                                Report R = reportList2.get(i);
+                                                                total += getNumFromLvl(R.getLevel());
                                                             }
-                                                            Log.d("REPORTLIST",reportList2.toString());
-                                                            Report newR=new Report(selectedLvl,new Date());
+                                                            Log.d("REPORTLIST", reportList2.toString());
+                                                            Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
 //                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
 //                                                            intent2.putExtra("ReportBuilding",name);
 //                                                            startActivity(intent2);
 //                                                            finish();
-                                                            lastBuilding=name;
+                                                            lastBuilding = name;
+                                                            loadMap();
+
+
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            // Getting Post failed, log a message
+                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                            // ...
+                                                        }
+                                                    });
+                                                }
+                                                if (which == 4) {
+                                                    final String selectedLvl = getLvlFromNum(which + 1);
+                                                    mDatabase.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            Log.d("GREENYELLOW", "Reached Green yellow color method");
+                                                            Log.d("DATACHILD", dataSnapshot.getChildrenCount() + "");
+
+                                                            Log.d("DATAKEY", dataSnapshot.getKey());
+
+                                                            Log.d("DATANAME", name);
+
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if (!child.getKey().equals("total_value")) {
+                                                                    Report rep = child.getValue(Report.class);
+                                                                    reportList2.add(rep);
+                                                                }
+
+
+                                                            }
+                                                            int total = 0;
+                                                            for (int i = 0; i < reportList2.size(); i++) {
+                                                                Report R = reportList2.get(i);
+                                                                total += getNumFromLvl(R.getLevel());
+                                                            }
+                                                            Log.d("REPORTLIST", reportList2.toString());
+                                                            Report newR = new Report(selectedLvl, new Date());
+                                                            mDatabase.child(name).push().setValue(newR);
+                                                            mDatabase.child("history").child(name).push().setValue(newR);
+//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
+//                                                            intent2.putExtra("ReportBuilding",name);
+//                                                            startActivity(intent2);
+//                                                            finish();
+                                                            lastBuilding = name;
                                                             loadMap();
 
 
@@ -700,45 +821,41 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                 Color.rgb(255, 0, 0)  //red
         };
         for (String s : buildingsMap.keySet()) {
-            String value=buildingsMap.get(s);
+            String value = buildingsMap.get(s);
 
             float l1 = .1f;
             float l2 = .2f;
             float l3 = .3f;
-            if(value.equals("Not Crowded")){
-                l1=.1f;
-                l2=2f;
-                l3=3f;
-            }
-            else if(value.equals("Slightly Crowded")){
-                l1=.1f;
-                l2=.5f;
-                l3=3f;
-            }
-            else if(value.equals("Crowded")){
-                l1=.1f;
-                l2=.2f;
-                l3=3f;
-            }
-            else if(value.equals("Very Crowded")){
-                l1=.1f;
-                l2=.2f;
-                l3=1f;
-            }
-            else {
-                l1=.1f;
-                l2=.2f;
-                l3=.3f;
+            if (value.equals("Not Crowded")) {
+                l1 = .1f;
+                l2 = 2f;
+                l3 = 3f;
+            } else if (value.equals("Slightly Crowded")) {
+                l1 = .1f;
+                l2 = .5f;
+                l3 = 3f;
+            } else if (value.equals("Crowded")) {
+                l1 = .1f;
+                l2 = .2f;
+                l3 = 3f;
+            } else if (value.equals("Very Crowded")) {
+                l1 = .1f;
+                l2 = .2f;
+                l3 = 1f;
+            } else {
+                l1 = .1f;
+                l2 = .2f;
+                l3 = .3f;
             }
 
             float[] startPoints = {
-                l1, l2, l3
+                    l1, l2, l3
             };
 
             List<LatLng> list = new ArrayList<LatLng>();
             list.add(buildingsLatLngs.get(s)); //cla
-            Log.d("SVALUE",s);
-            Log.d("BUILDING","message: "+buildingsLatLngs.toString());
+            Log.d("SVALUE", s);
+            Log.d("BUILDING", "message: " + buildingsLatLngs.toString());
             Log.d("LATLONG", list.toString());
             // Create a heat map tile provider, passing it the latlngs of the police stations.
 
@@ -753,61 +870,89 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     }
 
 
-    public String getDayoFWeek(){
+    public String getDayoFWeek() {
         Date now = new Date();
         SimpleDateFormat simpleDateformat = new SimpleDateFormat("EEEE"); // the day of the week abbreviated
         return simpleDateformat.format(now);
     }
 
-    public String parseHours(String format){
+    public String parseHours(String format) {
         /*
             expects format: 28 int characters, 4 per day, 2 per time_start/time_close
          */
         char[] data = format.toCharArray();
         String day = getDayoFWeek();
         int d;
-        switch (day){
-            case "Monday" : d = 0;
+        switch (day) {
+            case "Monday":
+                d = 0;
                 break;
-            case "Tuesday" : d = 1;
+            case "Tuesday":
+                d = 1;
                 break;
-            case "Wednesday" : d = 2;
+            case "Wednesday":
+                d = 2;
                 break;
-            case "Thursday" : d = 3;
+            case "Thursday":
+                d = 3;
                 break;
-            case "Friday" : d = 4;
+            case "Friday":
+                d = 4;
                 break;
-            case "Saturday" : d = 5;
+            case "Saturday":
+                d = 5;
                 break;
-            case "Sunday" : d = 6;
+            case "Sunday":
+                d = 6;
                 break;
-            default: d = -1;
+            default:
+                d = -1;
                 break;
         }
-        if (data[d*4] == 'c')
+        if (data[d * 4] == 'c')
             return "Closed";
-        int b = Integer.parseInt("" + data[d*4] + data[d*4+1]);
-        if(b == 24)
+        int b = Integer.parseInt("" + data[d * 4] + data[d * 4 + 1]);
+        if (b == 24)
             return "24 Hours";
-        int e = Integer.parseInt("" + data[d*4+2] + data[d*4+3]);
+        int e = Integer.parseInt("" + data[d * 4 + 2] + data[d * 4 + 3]);
 
         String TS1 = ((b / 12) == 1) ? "PM" : "AM";
         String TS2 = ((e / 12) == 1) ? "PM" : "AM";
 
-        if(e == 24)
-            return b%12 + ":00" + TS1 + " to midnight";
-        if(b == 00)
-            return "open until " + e%12 + ":00" + TS2;
+        if (e == 24)
+            return b % 12 + ":00" + TS1 + " to midnight";
+        if (b == 00)
+            return "open until " + e % 12 + ":00" + TS2;
 
-        return b%12 + ":00" + TS1 + " - " + e%12 + ":00" + TS2;
+        return b % 12 + ":00" + TS1 + " - " + e % 12 + ":00" + TS2;
     }
 
-    public double[] getLocation(){
+    public double[] getLocation() {
         GPSTracker gps = new GPSTracker(this);
         double latitude = gps.getLatitude();
         double longitude = gps.getLongitude();
-        Log.d("PhoneLocation",""+latitude+" "+longitude);
-        return new double[]{latitude,longitude};
+        Log.d("PhoneLocation", "" + latitude + " " + longitude);
+        return new double[]{latitude, longitude};
+    }
+
+    private double distance(double lat1, double lng1, double lat2, double lng2) {
+
+        double earthRadius = 3958.75; // in miles, change to 6371 for kilometer output
+
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLng = Math.toRadians(lng2 - lng1);
+
+        double sindLat = Math.sin(dLat / 2);
+        double sindLng = Math.sin(dLng / 2);
+
+        double a = Math.pow(sindLat, 2) + Math.pow(sindLng, 2)
+                * Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2));
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        double dist = earthRadius * c;
+
+        return dist; // output distance, in MILES
     }
 
 
