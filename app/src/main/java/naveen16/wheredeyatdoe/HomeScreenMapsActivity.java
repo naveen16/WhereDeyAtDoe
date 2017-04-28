@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -16,12 +15,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
@@ -42,8 +42,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -103,6 +101,8 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
+
+        //addGeofencesHandler();
 //        setContentView(R.layout.activity_home_screen_maps);
 //        mDatabase = FirebaseDatabase.getInstance().getReference();
 //        buildingsMap=new HashMap<String, String>();
@@ -146,6 +146,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     protected void onStart() {
         super.onStart();
         if (!mGoogleApiClient.isConnecting() || !mGoogleApiClient.isConnected()) {
+            Log.d("CONNECT", "IN IF FOR GOOGLE CLIENT CONNECT");
             mGoogleApiClient.connect();
         }
     }
@@ -154,12 +155,14 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     protected void onStop() {
         super.onStop();
         if (mGoogleApiClient.isConnecting() || mGoogleApiClient.isConnected()) {
+            Log.d("ONSTOP", "IN IF FOR GOOGLE CLIENT NOT CONNECT");
             mGoogleApiClient.disconnect();
         }
     }
     @Override
     public void onConnected(Bundle connectionHint) {
-
+        Log.d("ONCONNECTED", "IN ON CONNECTED");
+        addGeofencesHandler();
     }
 
     @Override
@@ -173,25 +176,29 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     }
 
     public void onResult(Status status) {
+        Log.d("INONRESULT","IN ON RESULT");
         if (status.isSuccess()) {
+            Log.d("INONRESULT","IN ON RESULT IF STATEMENT");
             Toast.makeText(
                     this,
                     "Geofences Added",
                     Toast.LENGTH_SHORT
             ).show();
         } else {
+            Log.d("INONRESULT","IN ON RESULT ELSE");
             // Get the status code for the error and log it using a user-friendly message.
             //String errorMessage = GeofenceErrorMessages.getErrorString(this,
                     //status.getStatusCode());
         }
     }
-    public void addGeofencesHandler(View view) {
+    public void addGeofencesHandler() {
         if (!mGoogleApiClient.isConnected()) {
             Toast.makeText(this, "Google API Client not connected!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
+            Log.d("INADDGEOFENCE","IN ADD GEO FENCE HANDLER");
             LocationServices.GeofencingApi.addGeofences(
                     mGoogleApiClient,
                     getGeofencingRequest(),
@@ -203,14 +210,17 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     }
 
     private GeofencingRequest getGeofencingRequest() {
-
         GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
+        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER|GeofencingRequest.INITIAL_TRIGGER_DWELL);
         builder.addGeofences(mGeofenceList);
+        for(int i =0; i < mGeofenceList.size(); i++){
+            Log.d("MGEOFENCELIST",mGeofenceList.get(i)+" latlng");
+        }
         return builder.build();
     }
 
     private PendingIntent getGeofencePendingIntent() {
+        Log.d("INPENDINGINTENT","IN GET GEOFENCE PENDING INTENT");
         Intent intent = new Intent(this, GeofenceTransitionsIntentService.class);
         // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling addgeoFences()
         return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -260,7 +270,9 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             case PERMISSION_ACCESS_COARSE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("INSIDEONREQUEST", "INSIDE ON REQUEST");
-                    loc = getLocation();
+                    //loc = getLocation();
+                    loc[0] = 37.785281;
+                    loc[1] = -122.4296384;
                     setUpUserMarker();
                     // All good!
                 } else {
@@ -300,7 +312,9 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_ACCESS_COARSE_LOCATION);
         } else {
-            loc = getLocation();
+            //loc = getLocation();
+            loc[0] = 37.785281;
+            loc[1] = -122.4296384;
             Log.d("INELSEMARKER", "IN ELSE OF MARKER");
             setUpUserMarker();
         }

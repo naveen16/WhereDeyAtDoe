@@ -53,6 +53,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
             Log.e(TAG, "GeofencingEvent Error: " + event.getErrorCode());
             return;
         }
+        Log.d("ONHANDLEINTENT","IN ON HANDLE INTENT PAST IF STATMENT");
         String description = getGeofenceTransitionDetails(event);
         sendNotification(description);
     }
@@ -67,6 +68,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
     }
 
     private void sendNotification(String notificationDetails) {
+        Log.d("INSENDNOTIFICATION","IN SEND NOTIFICATION");
         // Create an explicit content Intent that starts MainActivity.
         Intent notificationIntent = new Intent(getApplicationContext(), HomeScreenMapsActivity.class);
 
