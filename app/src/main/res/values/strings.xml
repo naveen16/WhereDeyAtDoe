@@ -50,4 +50,41 @@
 
     <string name="wag">Waggener Hall (WAG)</string>
     <string name="wagHours">08170817081708170817cccccccc</string>
+
+    <!--30.289023, -97.736466, RLM-->
+    <string name="rlm">Robert Lee Moore Hall (RLM)</string>
+    <string name="rlmHours">0623062306230623062206170223</string>
+
+    <!--30.288992, -97.735403, ECJ-->
+    <string name="ecj">Ernest Cockrell Jr. Hall (ECJ)</string>
+    <string name="ecjHours">0623062306230623062306170223</string>
+
+    <!--30.290203, -97.736144, CPE-->
+    <string name="cpe">Chemical and Petroleum Engineering (CPE)</string>
+    <string name="cpeHours">08170817081708170817cccccccc</string>
+
+    <!--30.290017, -97.738360, SSB-->
+    <string name="ssb">Student Services Building (SSB)</string>
+    <string name="ssbHours">0724072407240724072407240724</string>
+
+    <!--30.289360, -97.741153, CMB-->
+    <string name="cmb">Jesse H. Jones Comm. Ctr. (CMB)</string>
+    <string name="cmbHours">0723072307230723072307231023</string>
+
+    <!--30.283067, -97.738806, UTC-->
+    <string name="utc">University Teaching Center (UTC)</string>
+    <string name="utcHours">08170817081708170817cccccccc</string>
+
+    <!--30.286679, -97.741153, UNB-->
+    <string name="unb">Union Building (UNB)</string>
+    <string name="unbHours">07170717071707170717cccccccc</string>
+
+    <!--30.288062, -97.738569, PHR-->
+    <string name="phr">Pharmacy Building (PHR)</string>
+    <string name="phrHours">07170717071707170717cccccccc</string>
+
+    <!--30.285715, -97.734422, WIN-->
+    <string name="win">F.L. Winship Drama Bldg. (WIN)</string>
+    <string name="winHours">07170717071707170717cccccccc</string>
+
 </resources>
