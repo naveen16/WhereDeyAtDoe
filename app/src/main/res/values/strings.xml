@@ -9,4 +9,6 @@
         <item>Very Crowded</item>
         <item>As Crowded as it gets</item>
     </string-array>
+    <string name="cla">College of Liberal Arts (CLA)</string>
+    <string name="claHours">0623062306230623062308220822</string>
 </resources>

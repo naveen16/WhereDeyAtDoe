@@ -29,6 +29,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,12 +44,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static naveen16.wheredeyatdoe.R.id.map;
 
 public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -66,6 +71,8 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     private Map<String, String> buildingsMap;
     private Map<String, LatLng> buildingsLatLngs;
     private Map<String, String> buildingsHistoryMap;
+
+    private Map<Marker, Event> eventMap;
 
 
     List<Report> reportList;
@@ -235,10 +242,11 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         reportList2 = new ArrayList<Report>();
         historyRList = new ArrayList<Report>();
         buildingsHistoryMap = new HashMap<String, String>();
+        eventMap = new HashMap<Marker, Event>();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+                .findFragmentById(map);
         mapFragment.getMapAsync(this);
     }
 
@@ -319,12 +327,25 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             setUpUserMarker();
         }
 
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng point) {
+                Marker eventMarker = mMap.addMarker(new MarkerOptions().position(point).title("Custom location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                Intent intent = new Intent(HomeScreenMapsActivity.this, AddEventActivity.class);
+                Log.d("LAT",point.latitude+"");
+                intent.putExtra("Latitude",point.latitude);
+                intent.putExtra("Longitude",point.longitude);
+                startActivity(intent);
+                //event_info_set.put(eventMarker,);
+            }
+        });
 
-        // Add a marker in Sydney and move the camera
+
+        //adding a marker to cla
         LatLng cla = new LatLng(30.2849, -97.7355);
-        buildingsLatLngs.put("College of Liberal Arts (CLA)", cla);
-        Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title("College of Liberal Arts"));
-        info_set.put(claMarker, new String[]{"College of Liberal Arts (CLA)", "0623062306230623062308220822"});
+        buildingsLatLngs.put(getResources().getString(R.string.cla), cla);
+        Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title(getResources().getString(R.string.cla)));
+        info_set.put(claMarker, new String[]{getResources().getString(R.string.cla), getResources().getString(R.string.claHours)});
         // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
 
 
@@ -427,7 +448,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                     Log.d("OUTERLOOPKEY", child.getKey());
                     Log.d("OUTERLOOPVAL", child.getValue().toString());
 
-                    if (!child.getKey().equals("history")) {
+                    if (!child.getKey().equals("history") && !child.getKey().equals("events")) {
                         String level = "";
                         for (DataSnapshot child2 : child.getChildren()) {
                             Log.d("INNERLOOPKEY", child2.getKey());
@@ -457,6 +478,28 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                             int finalavg = (total) / (reportList.size());
                             mDatabase.child(child.getKey()).child("total_value").setValue(getLvlFromNum(finalavg));
                             buildingsMap.put(child.getKey(), getLvlFromNum(finalavg));
+                        }
+                    }
+                    else if(child.getKey().equals("events")){
+                        //process
+                        for (DataSnapshot child2 : child.getChildren()) {
+                            Event event = child2.getValue(Event.class);
+                            DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                            Date eDate = null;
+                            try {
+                                eDate = dateFormat.parse(event.getDate());
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            if(eDate.compareTo(new Date()) < 0){
+                                Log.d("DATECOMPARE",eDate.compareTo(new Date())+"'");
+                                child2.getRef().removeValue();
+                            }
+                            else {
+                                LatLng point = new LatLng(event.getLatitude(), event.getLongitude());
+                                Marker eventMarker = mMap.addMarker(new MarkerOptions().position(point).title("Event location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                                eventMap.put(eventMarker, event);
+                            }
                         }
                     }
                     //read history
@@ -574,7 +617,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 //                                startActivity(intent);
                                 String[] options = {"1", "2", "3", "4", "5"};
                                 final AlertDialog.Builder builder2 = new AlertDialog.Builder(builder.getContext());
-                                builder.setTitle("Select an option")
+                                builder.setTitle("Crowd level on a scale of 1-5")
                                         .setItems(options, new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 if (which == 0) {
@@ -822,6 +865,18 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                     });
             builder.create().show();
             //handle click here
+        }
+        else{
+            Event event = eventMap.get(marker);
+            Intent intent = new Intent(HomeScreenMapsActivity.this, EventDetailsActivity.class);
+            intent.putExtra("DATE", event.date);
+            intent.putExtra("DESCRIPTION", event.description);
+            intent.putExtra("LOCATION", event.location);
+            intent.putExtra("NAME", event.name);
+            intent.putExtra("START_TIME", event.startTime);
+            intent.putExtra("END_TIME", event.endTime);
+            intent.putExtra("PRICE", event.entryFee);
+            startActivity(intent);
         }
         return true;
 
