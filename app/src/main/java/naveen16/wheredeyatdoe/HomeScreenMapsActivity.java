@@ -653,6 +653,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                     intent.putExtra("HISTORY", "No Prior Data");
                                 else
                                     intent.putExtra("HISTORY", buildingsHistoryMap.get(name));
+                                intent.putExtra("IMAGE", R.drawable.cla);
                                 startActivity(intent);
                             }
                             if (which == 1) {

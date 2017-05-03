@@ -3,6 +3,7 @@ package naveen16.wheredeyatdoe;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class BuildingDetailsActivity extends AppCompatActivity {
@@ -22,5 +23,9 @@ public class BuildingDetailsActivity extends AppCompatActivity {
         popularityValue.setText(intent.getExtras().getString("POPULARITY"));
         TextView popularityHistoryValue = (TextView) findViewById(R.id.popularityHistoryValue);
         popularityHistoryValue.setText(intent.getExtras().getString("HISTORY"));
+
+        ImageView buildingImage = (ImageView) findViewById(R.id.imageView);
+        int draw = intent.getExtras().getInt("IMAGE", R.drawable.generic_building);
+        buildingImage.setImageResource(draw);
     }
 }
