@@ -170,11 +170,11 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         Log.d("INONRESULT","IN ON RESULT");
         if (status.isSuccess()) {
             Log.d("INONRESULT","IN ON RESULT IF STATEMENT");
-            Toast.makeText(
-                    this,
-                    "Geofences Added",
-                    Toast.LENGTH_SHORT
-            ).show();
+            //Toast.makeText(
+              //      this,
+                //    "Geofences Added",
+                  //  Toast.LENGTH_SHORT
+            //).show();
         } else {
             Log.d("INONRESULT","IN ON RESULT ELSE");
             // Get the status code for the error and log it using a user-friendly message.
@@ -265,9 +265,9 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             case PERMISSION_ACCESS_COARSE_LOCATION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("INSIDEONREQUEST", "INSIDE ON REQUEST");
-                    //loc = getLocation();
-                    loc[0] = 37.785281;
-                    loc[1] = -122.4296384;
+                    loc = getLocation();
+                    //loc[0] = 37.785281;
+                    //loc[1] = -122.4296384;
                     setUpUserMarker();
                     // All good!
                 } else {
@@ -502,9 +502,9 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_ACCESS_COARSE_LOCATION);
         } else {
-            //loc = getLocation();
-            loc[0] = 37.785281;
-            loc[1] = -122.4296384;
+            loc = getLocation();
+            //loc[0] = 37.785281;
+            //loc[1] = -122.4296384;
             Log.d("INELSEMARKER", "IN ELSE OF MARKER");
             setUpUserMarker();
         }
@@ -731,9 +731,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                 startActivity(intent);
                             }
                             if (which == 1) {
-//                                Intent intent = new Intent(HomeScreenMapsActivity.this,ReportActivity.class);
-//                                intent.putExtra("NAME",name);
-//                                startActivity(intent);
                                 String[] options = {"1", "2", "3", "4", "5"};
                                 final AlertDialog.Builder builder2 = new AlertDialog.Builder(builder.getContext());
                                 builder.setTitle("Crowd level on a scale of 1-5")
@@ -768,26 +765,9 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
-//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
-//                                                            intent2.putExtra("ReportBuilding",name);
-//                                                            startActivity(intent2);
-//                                                            finish();
+
                                                             lastBuilding = name;
-//                                                            mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                                @Override
-//                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-//                                                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-//                                                                       if(child.getValue().equals(name))
-//                                                                           child.getRef().removeValue();
-//                                                                    }
-//                                                                }
-//                                                                @Override
-//                                                                public void onCancelled(DatabaseError databaseError) {
-//                                                                    // Getting Post failed, log a message
-//                                                                    Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
-//                                                                    // ...
-//                                                                }
-//                                                            });
+
                                                             loadMap();
 
 
@@ -847,10 +827,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
-//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
-//                                                            intent2.putExtra("ReportBuilding",name);
-//                                                            startActivity(intent2);
-//                                                            finish();
+
                                                             lastBuilding = name;
                                                             loadMap();
 
@@ -910,10 +887,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
-//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
-//                                                            intent2.putExtra("ReportBuilding",name);
-//                                                            startActivity(intent2);
-//                                                            finish();
+
                                                             lastBuilding = name;
                                                             loadMap();
 
@@ -973,10 +947,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
-//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
-//                                                            intent2.putExtra("ReportBuilding",name);
-//                                                            startActivity(intent2);
-//                                                            finish();
                                                             lastBuilding = name;
                                                             loadMap();
 
@@ -1036,10 +1006,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             Report newR = new Report(selectedLvl, new Date());
                                                             mDatabase.child(name).push().setValue(newR);
                                                             mDatabase.child("history").child(name).push().setValue(newR);
-//                                                            Intent intent2=new Intent(ReportActivity.this,HomeScreenMapsActivity.class);
-//                                                            intent2.putExtra("ReportBuilding",name);
-//                                                            startActivity(intent2);
-//                                                            finish();
+
                                                             lastBuilding = name;
                                                             loadMap();
 
