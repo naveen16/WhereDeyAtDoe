@@ -11,4 +11,80 @@
     </string-array>
     <string name="cla">College of Liberal Arts (CLA)</string>
     <string name="claHours">0623062306230623062308220822</string>
+
+    <string name="greg">Gregory Gymnasium</string>
+    <string name="gregHours">0601060106010601062208221001</string>
+
+    <string name="pcl">Perry Castaneda Library (PCL)</string>
+    <string name="pclHours">2424242424242424002310231124</string>
+
+    <string name="sac">Student Activity Center (SAC)</string>
+    <string name="sacHours">07170717071707170717cccccccc</string>
+
+    <string name="gdc">Gates Dell Complex (GDC)</string>
+    <string name="gdcHours">2424242424242424242424242424</string>
+
+    <string name="mai">Main Building (MAI)</string>
+    <string name="maiHours">2424242424242424242424242424</string>
+
+    <string name="jgb">Jackson Geological Sciences Building (JGB)</string>
+    <string name="jgbHours">08220822082208220818cccc1422</string>
+
+    <string name="wel">Robert A Welch Hall (WEL)</string>
+    <string name="welHours">08220822082208220818cccc1422</string>
+
+    <string name="fac">Flawn Academic Hall (FAC)</string>
+    <string name="facHours">2424242424242424002210220022</string>
+
+    <string name="bma">Jack S Blanton Museum of Art (BMA)</string>
+    <string name="bmaHours">cccc101710171017101711171317</string>
+
+    <string name="hrc">Harry Ransom Center (HRC)</string>
+    <string name="hrcHours">1017101710171019101712171217</string>
+
+    <string name="jcl">Jester City Limits (JCL)</string>
+    <string name="jclHours">0723072307230723072109200923</string>
+
+    <string name="sou">South Mall (SOU)</string>
+    <string name="souHours">2424242424242424242424242424</string>
+
+    <string name="wag">Waggener Hall (WAG)</string>
+    <string name="wagHours">08170817081708170817cccccccc</string>
+
+    <!--30.289023, -97.736466, RLM-->
+    <string name="rlm">Robert Lee Moore Hall (RLM)</string>
+    <string name="rlmHours">0623062306230623062206170223</string>
+
+    <!--30.288992, -97.735403, ECJ-->
+    <string name="ecj">Ernest Cockrell Jr. Hall (ECJ)</string>
+    <string name="ecjHours">0623062306230623062306170223</string>
+
+    <!--30.290203, -97.736144, CPE-->
+    <string name="cpe">Chemical and Petroleum Engineering (CPE)</string>
+    <string name="cpeHours">08170817081708170817cccccccc</string>
+
+    <!--30.290017, -97.738360, SSB-->
+    <string name="ssb">Student Services Building (SSB)</string>
+    <string name="ssbHours">0724072407240724072407240724</string>
+
+    <!--30.289360, -97.741153, CMB-->
+    <string name="cmb">Jesse H. Jones Comm. Ctr. (CMB)</string>
+    <string name="cmbHours">0723072307230723072307231023</string>
+
+    <!--30.283067, -97.738806, UTC-->
+    <string name="utc">University Teaching Center (UTC)</string>
+    <string name="utcHours">08170817081708170817cccccccc</string>
+
+    <!--30.286679, -97.741153, UNB-->
+    <string name="unb">Union Building (UNB)</string>
+    <string name="unbHours">07170717071707170717cccccccc</string>
+
+    <!--30.288062, -97.738569, PHR-->
+    <string name="phr">Pharmacy Building (PHR)</string>
+    <string name="phrHours">07170717071707170717cccccccc</string>
+
+    <!--30.285715, -97.734422, WIN-->
+    <string name="win">F.L. Winship Drama Bldg. (WIN)</string>
+    <string name="winHours">07170717071707170717cccccccc</string>
+
 </resources>
