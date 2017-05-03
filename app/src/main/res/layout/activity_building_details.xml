@@ -44,9 +44,9 @@
         android:layout_marginTop="13dp"
         android:layout_x="190dp"
         android:layout_y="120dp"
-        android:fontFamily="monospace"
+        android:fontFamily="sans-serif"
         android:text="Today's hours:\n16:00AM - 10:00PM"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
@@ -66,15 +66,15 @@
         android:id="@+id/popularityHistoryLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:layout_x="80dp"
         android:layout_y="360dp"
+        android:gravity="center_horizontal"
         android:text="History"
-        android:textSize="18sp"
+        android:textSize="18dp"
         android:textStyle="bold"
         android:layout_above="@+id/popularityValue"
-        android:layout_alignRight="@+id/hoursValue"
-        android:layout_alignEnd="@+id/hoursValue" />
+        android:layout_alignRight="@+id/imageView"
+        android:layout_alignEnd="@+id/imageView" />
 
     <TextView
         android:id="@+id/popularityValue"
