@@ -402,6 +402,78 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             wagMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         info_set.put(wagMarker, new String[]{getResources().getString(R.string.wag), getResources().getString(R.string.wagHours)});
 
+        //adding a marker to RLM
+        LatLng rlm = new LatLng(30.289023, -97.736466);
+        buildingsLatLngs.put(getResources().getString(R.string.rlm), rlm);
+        Marker rlmMarker = mMap.addMarker(new MarkerOptions().position(rlm).title(getResources().getString(R.string.rlm)));
+        if(requested.contains(getResources().getString(R.string.rlm)))
+            rlmMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(rlmMarker, new String[]{getResources().getString(R.string.rlm), getResources().getString(R.string.rlmHours)});
+
+        //adding a marker to ECJ
+        LatLng ecj = new LatLng(30.288992, -97.735403);
+        buildingsLatLngs.put(getResources().getString(R.string.ecj), ecj);
+        Marker ecjMarker = mMap.addMarker(new MarkerOptions().position(ecj).title(getResources().getString(R.string.ecj)));
+        if(requested.contains(getResources().getString(R.string.ecj)))
+            ecjMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(ecjMarker, new String[]{getResources().getString(R.string.ecj), getResources().getString(R.string.ecjHours)});
+
+        //adding a marker to CPE
+        LatLng cpe = new LatLng(30.290203, -97.736144);
+        buildingsLatLngs.put(getResources().getString(R.string.cpe), cpe);
+        Marker cpeMarker = mMap.addMarker(new MarkerOptions().position(cpe).title(getResources().getString(R.string.cpe)));
+        if(requested.contains(getResources().getString(R.string.cpe)))
+            cpeMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(cpeMarker, new String[]{getResources().getString(R.string.cpe), getResources().getString(R.string.cpeHours)});
+
+        //adding a marker to SSB
+        LatLng ssb = new LatLng(30.290017, -97.738360);
+        buildingsLatLngs.put(getResources().getString(R.string.ssb), ssb);
+        Marker ssbMarker = mMap.addMarker(new MarkerOptions().position(ssb).title(getResources().getString(R.string.ssb)));
+        if(requested.contains(getResources().getString(R.string.ssb)))
+            ssbMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(ssbMarker, new String[]{getResources().getString(R.string.ssb), getResources().getString(R.string.ssbHours)});
+
+        //adding a marker to CMB
+        LatLng cmb = new LatLng(30.289360, -97.741153);
+        buildingsLatLngs.put(getResources().getString(R.string.cmb), cmb);
+        Marker cmbMarker = mMap.addMarker(new MarkerOptions().position(cmb).title(getResources().getString(R.string.cmb)));
+        if(requested.contains(getResources().getString(R.string.cmb)))
+            cmbMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(cmbMarker, new String[]{getResources().getString(R.string.cmb), getResources().getString(R.string.cmbHours)});
+
+        //adding a marker to UTC
+        LatLng utc = new LatLng(30.283067, -97.738806);
+        buildingsLatLngs.put(getResources().getString(R.string.utc), utc);
+        Marker utcMarker = mMap.addMarker(new MarkerOptions().position(utc).title(getResources().getString(R.string.utc)));
+        if(requested.contains(getResources().getString(R.string.utc)))
+            utcMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(utcMarker, new String[]{getResources().getString(R.string.utc), getResources().getString(R.string.utcHours)});
+
+        //adding a marker to UNB
+        LatLng unb = new LatLng(30.286679, -97.741153);
+        buildingsLatLngs.put(getResources().getString(R.string.unb), unb);
+        Marker unbMarker = mMap.addMarker(new MarkerOptions().position(unb).title(getResources().getString(R.string.unb)));
+        if(requested.contains(getResources().getString(R.string.unb)))
+            unbMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(unbMarker, new String[]{getResources().getString(R.string.unb), getResources().getString(R.string.unbHours)});
+
+        //adding a marker to PHR
+        LatLng phr = new LatLng(30.288062, -97.738569);
+        buildingsLatLngs.put(getResources().getString(R.string.phr), phr);
+        Marker phrMarker = mMap.addMarker(new MarkerOptions().position(phr).title(getResources().getString(R.string.phr)));
+        if(requested.contains(getResources().getString(R.string.phr)))
+            phrMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(phrMarker, new String[]{getResources().getString(R.string.phr), getResources().getString(R.string.phrHours)});
+
+        //adding a marker to WIN
+        LatLng win = new LatLng(30.285715, -97.734422);
+        buildingsLatLngs.put(getResources().getString(R.string.win), win);
+        Marker winMarker = mMap.addMarker(new MarkerOptions().position(win).title(getResources().getString(R.string.win)));
+        if(requested.contains(getResources().getString(R.string.win)))
+            winMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(winMarker, new String[]{getResources().getString(R.string.win), getResources().getString(R.string.winHours)});
+
         if (!lastBuilding.equals("default")) {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(lastBuilding)));
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(lastBuilding), 17));
