@@ -56,7 +56,7 @@
     <string name="rlmHours">0623062306230623062206170223</string>
 
     <!--30.288992, -97.735403, ECJ-->
-    <string name="ecj">Ernest Cockrell Jr. Hall (ECJ)</string>
+    <string name="ecj">Ernest Cockrell Jr Hall (ECJ)</string>
     <string name="ecjHours">0623062306230623062306170223</string>
 
     <!--30.290203, -97.736144, CPE-->
@@ -68,7 +68,7 @@
     <string name="ssbHours">0724072407240724072407240724</string>
 
     <!--30.289360, -97.741153, CMB-->
-    <string name="cmb">Jesse H. Jones Comm. Ctr. (CMB)</string>
+    <string name="cmb">Jesse H Jones Comm Ctr (CMB)</string>
     <string name="cmbHours">0723072307230723072307231023</string>
 
     <!--30.283067, -97.738806, UTC-->
@@ -84,7 +84,7 @@
     <string name="phrHours">07170717071707170717cccccccc</string>
 
     <!--30.285715, -97.734422, WIN-->
-    <string name="win">F.L. Winship Drama Bldg. (WIN)</string>
+    <string name="win">F L Winship Drama Bldg (WIN)</string>
     <string name="winHours">07170717071707170717cccccccc</string>
     <string name="refresh">Refresh</string>
 
