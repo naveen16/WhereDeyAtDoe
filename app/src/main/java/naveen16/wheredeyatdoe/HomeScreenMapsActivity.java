@@ -74,6 +74,8 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
     private Map<Marker, Event> eventMap;
 
+    private List<String> requested;
+
 
     List<Report> reportList;
     List<Report> reportList2;
@@ -243,6 +245,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         historyRList = new ArrayList<Report>();
         buildingsHistoryMap = new HashMap<String, String>();
         eventMap = new HashMap<Marker, Event>();
+        requested = new ArrayList<String>();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -301,6 +304,128 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
     }
 
 
+    public void addMarkers(List<String> requested){
+        //adding a marker to cla
+        LatLng cla = new LatLng(30.2849, -97.7355);
+        buildingsLatLngs.put(getResources().getString(R.string.cla), cla);
+        Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title(getResources().getString(R.string.cla)));
+        if(requested.contains(getResources().getString(R.string.cla)))
+            claMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(claMarker, new String[]{getResources().getString(R.string.cla), getResources().getString(R.string.claHours)});
+
+        //adding a marker to gregory gym
+        LatLng gregoryGym = new LatLng(30.2842, -97.7365);
+        buildingsLatLngs.put("Gregory Gymnasium", gregoryGym);
+        Marker gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
+        if(requested.contains("Gregory Gymnasium"))
+            gregoryMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "0601060106010601062208221001"});
+
+        //adding a marker to pcl library
+        LatLng pcl = new LatLng(30.2827, -97.7381);
+        buildingsLatLngs.put("Perry Castaneda Library (PCL)", pcl);
+        Marker pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
+        if(requested.contains("Perry Castaneda Library (PCL)"))
+            pclMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "2424242424242424002310231124"});
+
+        //adding a marker to SAC
+        LatLng sac = new LatLng(30.2849, -97.7360);
+        buildingsLatLngs.put("Student Activity Center (SAC)", sac);
+        Marker sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
+        if(requested.contains("Student Activity Center (SAC)"))
+            sacMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "07170717071707170717cccccccc"});
+
+        //adding a marker to GDC
+        LatLng gdc = new LatLng(30.28628, -97.73662);
+        buildingsLatLngs.put("Gates Dell Complex (GDC)", gdc);
+        Marker gdcMarker = mMap.addMarker(new MarkerOptions().position(gdc).title("GDC"));
+        if(requested.contains("Gates Dell Complex (GDC)"))
+            gdcMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "2424242424242424242424242424"});
+
+        //adding a marker to UT Tower
+        LatLng mai = new LatLng(30.286096, -97.73938);
+        buildingsLatLngs.put("Main Building (MAI)", mai);
+        Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
+        if(requested.contains("Main Building (MAI)"))
+            maiMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "2424242424242424242424242424"});
+
+        //adding a marker to Jackson Geological Sciences Building
+        LatLng jgb = new LatLng(30.285821, -97.735745);
+        buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)", jgb);
+        Marker jgbMarker = mMap.addMarker(new MarkerOptions().position(jgb).title("JGB"));
+        if(requested.contains("Jackson Geological Sciences Building (JGB)"))
+            jgbMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "08220822082208220818cccc1422"});
+
+        //adding a marker to Robert A. Welch Hall
+        LatLng wel = new LatLng(30.286696, -97.737692);
+        buildingsLatLngs.put("Robert A Welch Hall (WEL)", wel);
+        Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
+        if(requested.contains("Robert A Welch Hall (WEL)"))
+            welMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
+        info_set.put(welMarker, new String[]{"Robert A Welch Hall (WEL)", "08220822082208220818cccc1422"});
+
+        //adding a marker to Flawn Academic Center
+        LatLng fac = new LatLng(30.286281, -97.740313);
+        buildingsLatLngs.put("Flawn Academic Hall (FAC)", fac);
+        Marker facMarker = mMap.addMarker(new MarkerOptions().position(fac).title("FAC"));
+        if(requested.contains("Flawn Academic Hall (FAC)"))
+            facMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "2424242424242424002210220022"});
+
+        //adding a marker to Jack S. Blanton Museum of Art
+        LatLng bma = new LatLng(30.281014, -97.737473);
+        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)", bma);
+        Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
+        info_set.put(bmaMarker, new String[]{"Jack S Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
+
+        //adding a marker to Harry Ransom Center
+        LatLng hrc = new LatLng(30.281014, -97.737473);
+        buildingsLatLngs.put("Harry Ransom Center (HRC)", hrc);
+        Marker hrcMarker = mMap.addMarker(new MarkerOptions().position(hrc).title("HRC"));
+        if(requested.contains("Harry Ransom Center (HRC)"))
+            hrcMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "1017101710171019101712171217"});
+
+        //adding a marker to Jester City Limits
+        LatLng jcl = new LatLng(30.282806, -97.736771);
+        buildingsLatLngs.put("Jester City Limits (JCL)", jcl);
+        Marker jclMarker = mMap.addMarker(new MarkerOptions().position(jcl).title("JCL"));
+        if(requested.contains("Jester City Limits (JCL)"))
+            jclMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "0723072307230723072109200923"});
+
+        //adding a marker to South Mall
+        LatLng sou = new LatLng(30.284373, -97.739572);
+        buildingsLatLngs.put("South Mall (SOU)", sou);
+        Marker souMarker = mMap.addMarker(new MarkerOptions().position(sou).title("SOU"));
+        if(requested.contains("South Mall (SOU)"))
+            souMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(souMarker, new String[]{"South Mall (SOU)", "2424242424242424242424242424"});
+
+        //adding a marker to Waggener Hall
+        LatLng wag = new LatLng(30.284995, -97.737630);
+        buildingsLatLngs.put("Waggener Hall (WAG)", wag);
+        Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
+        if(requested.contains("Waggener Hall (WAG)"))
+            wagMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
+
+        if (!lastBuilding.equals("default")) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(lastBuilding)));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(lastBuilding), 17));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
+        }
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -340,102 +465,124 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             }
         });
 
+        Log.d("REQUESTEDABOVE",requested.toString());
+        mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Log.d("REQ",child.getValue().toString());
+                    requested.add(child.getValue().toString());
+                }
+                Log.d("REQUESTED",requested.toString());
+                addMarkers(requested);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        });
 
-        //adding a marker to cla
-        LatLng cla = new LatLng(30.2849, -97.7355);
-        buildingsLatLngs.put(getResources().getString(R.string.cla), cla);
-        Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title(getResources().getString(R.string.cla)));
-        info_set.put(claMarker, new String[]{getResources().getString(R.string.cla), getResources().getString(R.string.claHours)});
-        // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
+        if(requested.size() == 0)
+            addMarkers(requested);
 
 
-        //adding a marker to gregory gym
-        LatLng gregoryGym = new LatLng(30.2842, -97.7365);
-        buildingsLatLngs.put("Gregory Gymnasium", gregoryGym);
-        Marker gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
-        info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "0601060106010601062208221001"});
+//        //adding a marker to cla
+//        LatLng cla = new LatLng(30.2849, -97.7355);
+//        buildingsLatLngs.put(getResources().getString(R.string.cla), cla);
+//        Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title(getResources().getString(R.string.cla)));
+//        info_set.put(claMarker, new String[]{getResources().getString(R.string.cla), getResources().getString(R.string.claHours)});
+//        // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
+//
+//
+//        //adding a marker to gregory gym
+//        LatLng gregoryGym = new LatLng(30.2842, -97.7365);
+//        buildingsLatLngs.put("Gregory Gymnasium", gregoryGym);
+//        Marker gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
+//        info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "0601060106010601062208221001"});
 
-        //adding a marker to pcl library
-        LatLng pcl = new LatLng(30.2827, -97.7381);
-        buildingsLatLngs.put("Perry Castaneda Library (PCL)", pcl);
-        Marker pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
-        info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "2424242424242424002310231124"});
+//        //adding a marker to pcl library
+//        LatLng pcl = new LatLng(30.2827, -97.7381);
+//        buildingsLatLngs.put("Perry Castaneda Library (PCL)", pcl);
+//        Marker pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
+//        info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "2424242424242424002310231124"});
+//
+//        //adding a marker to SAC
+//        LatLng sac = new LatLng(30.2849, -97.7360);
+//        buildingsLatLngs.put("Student Activity Center (SAC)", sac);
+//        Marker sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
+//        info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "07170717071707170717cccccccc"});
+//
+//        //adding a marker to GDC
+//        LatLng gdc = new LatLng(30.28628, -97.73662);
+//        buildingsLatLngs.put("Gates Dell Complex (GDC)", gdc);
+//        Marker gdcMarker = mMap.addMarker(new MarkerOptions().position(gdc).title("GDC"));
+//        info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "2424242424242424242424242424"});
+//
+//        //adding a marker to UT Tower
+//        LatLng mai = new LatLng(30.286096, -97.73938);
+//        buildingsLatLngs.put("Main Building (MAI)", mai);
+//        Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
+//        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "2424242424242424242424242424"});
+//
+//        //adding a marker to Jackson Geological Sciences Building
+//        LatLng jgb = new LatLng(30.285821, -97.735745);
+//        buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)", jgb);
+//        Marker jgbMarker = mMap.addMarker(new MarkerOptions().position(jgb).title("JGB"));
+//        info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "08220822082208220818cccc1422"});
+//
+//        //adding a marker to Robert A. Welch Hall
+//        LatLng wel = new LatLng(30.286696, -97.737692);
+//        buildingsLatLngs.put("Robert A Welch Hall (WEL)", wel);
+//        Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
+//        info_set.put(welMarker, new String[]{"Robert A Welch Hall (WEL)", "08220822082208220818cccc1422"});
+//
+//        //adding a marker to Flawn Academic Center
+//        LatLng fac = new LatLng(30.286281, -97.740313);
+//        buildingsLatLngs.put("Flawn Academic Hall (FAC)", fac);
+//        Marker facMarker = mMap.addMarker(new MarkerOptions().position(fac).title("FAC"));
+//        info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "2424242424242424002210220022"});
+//
+//        //adding a marker to Jack S. Blanton Museum of Art
+//        LatLng bma = new LatLng(30.281014, -97.737473);
+//        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)", bma);
+//        Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
+//        info_set.put(bmaMarker, new String[]{"Jack S Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
+//
+//        //adding a marker to Harry Ransom Center
+//        LatLng hrc = new LatLng(30.281014, -97.737473);
+//        buildingsLatLngs.put("Harry Ransom Center (HRC)", hrc);
+//        Marker hrcMarker = mMap.addMarker(new MarkerOptions().position(hrc).title("HRC"));
+//        info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "1017101710171019101712171217"});
+//
+//        //adding a marker to Jester City Limits
+//        LatLng jcl = new LatLng(30.282806, -97.736771);
+//        buildingsLatLngs.put("Jester City Limits (JCL)", jcl);
+//        Marker jclMarker = mMap.addMarker(new MarkerOptions().position(jcl).title("JCL"));
+//        info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "0723072307230723072109200923"});
+//
+//        //adding a marker to South Mall
+//        LatLng sou = new LatLng(30.284373, -97.739572);
+//        buildingsLatLngs.put("South Mall (SOU)", sou);
+//        Marker souMarker = mMap.addMarker(new MarkerOptions().position(sou).title("SOU"));
+//        info_set.put(souMarker, new String[]{"South Mall (SOU)", "2424242424242424242424242424"});
+//
+//        //adding a marker to Waggener Hall
+//        LatLng wag = new LatLng(30.284995, -97.737630);
+//        buildingsLatLngs.put("Waggener Hall (WAG)", wag);
+//        Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
+//        info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
 
-        //adding a marker to SAC
-        LatLng sac = new LatLng(30.2849, -97.7360);
-        buildingsLatLngs.put("Student Activity Center (SAC)", sac);
-        Marker sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
-        info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "07170717071707170717cccccccc"});
-
-        //adding a marker to GDC
-        LatLng gdc = new LatLng(30.28628, -97.73662);
-        buildingsLatLngs.put("Gates Dell Complex (GDC)", gdc);
-        Marker gdcMarker = mMap.addMarker(new MarkerOptions().position(gdc).title("GDC"));
-        info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "2424242424242424242424242424"});
-
-        //adding a marker to UT Tower
-        LatLng mai = new LatLng(30.286096, -97.73938);
-        buildingsLatLngs.put("Main Building (MAI)", mai);
-        Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
-        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "2424242424242424242424242424"});
-
-        //adding a marker to Jackson Geological Sciences Building
-        LatLng jgb = new LatLng(30.285821, -97.735745);
-        buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)", jgb);
-        Marker jgbMarker = mMap.addMarker(new MarkerOptions().position(jgb).title("JGB"));
-        info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "08220822082208220818cccc1422"});
-
-        //adding a marker to Robert A. Welch Hall
-        LatLng wel = new LatLng(30.286696, -97.737692);
-        buildingsLatLngs.put("Robert A Welch Hall (WEL)", wel);
-        Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
-        info_set.put(welMarker, new String[]{"Robert A Welch Hall (WEL)", "08220822082208220818cccc1422"});
-
-        //adding a marker to Flawn Academic Center
-        LatLng fac = new LatLng(30.286281, -97.740313);
-        buildingsLatLngs.put("Flawn Academic Hall (FAC)", fac);
-        Marker facMarker = mMap.addMarker(new MarkerOptions().position(fac).title("FAC"));
-        info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "2424242424242424002210220022"});
-
-        //adding a marker to Jack S. Blanton Museum of Art
-        LatLng bma = new LatLng(30.281014, -97.737473);
-        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)", bma);
-        Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
-        info_set.put(bmaMarker, new String[]{"Jack S Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
-
-        //adding a marker to Harry Ransom Center
-        LatLng hrc = new LatLng(30.281014, -97.737473);
-        buildingsLatLngs.put("Harry Ransom Center (HRC)", hrc);
-        Marker hrcMarker = mMap.addMarker(new MarkerOptions().position(hrc).title("HRC"));
-        info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "1017101710171019101712171217"});
-
-        //adding a marker to Jester City Limits
-        LatLng jcl = new LatLng(30.282806, -97.736771);
-        buildingsLatLngs.put("Jester City Limits (JCL)", jcl);
-        Marker jclMarker = mMap.addMarker(new MarkerOptions().position(jcl).title("JCL"));
-        info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "0723072307230723072109200923"});
-
-        //adding a marker to South Mall
-        LatLng sou = new LatLng(30.284373, -97.739572);
-        buildingsLatLngs.put("South Mall (SOU)", sou);
-        Marker souMarker = mMap.addMarker(new MarkerOptions().position(sou).title("SOU"));
-        info_set.put(souMarker, new String[]{"South Mall (SOU)", "2424242424242424242424242424"});
-
-        //adding a marker to Waggener Hall
-        LatLng wag = new LatLng(30.284995, -97.737630);
-        buildingsLatLngs.put("Waggener Hall (WAG)", wag);
-        Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
-        info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
-
-        if (!lastBuilding.equals("default")) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(lastBuilding)));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(lastBuilding), 17));
-        } else {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
-        }
+//        if (!lastBuilding.equals("default")) {
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(lastBuilding)));
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(lastBuilding), 17));
+//        } else {
+//            mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
+//        }
 
 
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -448,7 +595,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                     Log.d("OUTERLOOPKEY", child.getKey());
                     Log.d("OUTERLOOPVAL", child.getValue().toString());
 
-                    if (!child.getKey().equals("history") && !child.getKey().equals("events")) {
+                    if (!child.getKey().equals("history") && !child.getKey().equals("events") && !child.getKey().equals("request")) {
                         String level = "";
                         for (DataSnapshot child2 : child.getChildren()) {
                             Log.d("INNERLOOPKEY", child2.getKey());
@@ -485,25 +632,32 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                         for (DataSnapshot child2 : child.getChildren()) {
                             Event event = child2.getValue(Event.class);
                             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                            String now = dateFormat.format(new Date());
                             Date eDate = null;
                             try {
                                 eDate = dateFormat.parse(event.getDate());
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-                            if(eDate.compareTo(new Date()) < 0){
-                                Log.d("DATECOMPARE",eDate.compareTo(new Date())+"'");
-                                child2.getRef().removeValue();
-                            }
-                            else {
-                                LatLng point = new LatLng(event.getLatitude(), event.getLongitude());
-                                Marker eventMarker = mMap.addMarker(new MarkerOptions().position(point).title("Event location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-                                eventMap.put(eventMarker, event);
+                            try {
+                                if(eDate.compareTo(dateFormat.parse(now)) < 0){
+                                    Log.d("DATECOMPARE",eDate.compareTo(new Date())+"'");
+                                    Log.d("DATECOMPARE1",eDate+"");
+                                    Log.d("DATECOMPARE2",new Date()+"");
+                                    child2.getRef().removeValue();
+                                }
+                                else if(eDate.compareTo(dateFormat.parse(now)) == 0){
+                                    LatLng point = new LatLng(event.getLatitude(), event.getLongitude());
+                                    Marker eventMarker = mMap.addMarker(new MarkerOptions().position(point).title("Event location").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                                    eventMap.put(eventMarker, event);
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
                     //read history
-                    else {
+                    else if(child.getKey().equals("history")){
                         Log.d("CKEY", child.getKey());
                         for (DataSnapshot child2 : child.getChildren()) {
                             Log.d("OUTERLOOPKEYHISTORY", child2.getKey());
@@ -591,7 +745,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             final String name = info[0];
             final String hours = parseHours(info[1]);
 
-            String[] options = {"View Details", "Report", "Cancel"};
+            String[] options = {"View Details", "Report", "Request Report", "Cancel"};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             //builder.setTitle("Select an option")
             builder.setTitle(name)
@@ -654,6 +808,21 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 //                                                            startActivity(intent2);
 //                                                            finish();
                                                             lastBuilding = name;
+                                                            mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                       if(child.getValue().equals(name))
+                                                                           child.getRef().removeValue();
+                                                                    }
+                                                                }
+                                                                @Override
+                                                                public void onCancelled(DatabaseError databaseError) {
+                                                                    // Getting Post failed, log a message
+                                                                    Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                                    // ...
+                                                                }
+                                                            });
                                                             loadMap();
 
 
@@ -859,6 +1028,11 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                             }
                                         });
                                 builder.create().show();
+                            }
+                            if(which == 2){
+                                //marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                mDatabase.child("request").push().setValue(name);
+                                loadMap();
                             }
 
                         }
