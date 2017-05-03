@@ -101,7 +101,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_home_screen_maps);
 
         loadMap();
-        //mAddGeofencesButton = (Button) findViewById(R.id.add_geofences_button);
         // Empty list for storing geofences.
         mGeofenceList = new ArrayList<Geofence>();
 
@@ -110,23 +109,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
         // Kick off the request to build GoogleApiClient.
         buildGoogleApiClient();
-
-        //addGeofencesHandler();
-//        setContentView(R.layout.activity_home_screen_maps);
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        buildingsMap=new HashMap<String, String>();
-//        buildingsLatLngs=new HashMap<String, LatLng>();
-//        reportList=new ArrayList<Report>();
-//        reportList2=new ArrayList<Report>();
-//        historyRList=new ArrayList<Report>();
-//        buildingsHistoryMap=new HashMap<String, String>();
-//
-//        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-//        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-//                .findFragmentById(R.id.map);
-//        mapFragment.getMapAsync(this);
-
-
     }
 
     public void populateGeofenceList() {
@@ -269,6 +251,8 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                         InstructionsActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.refresh:
+                loadMap();
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -300,6 +284,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
         //adding a marker for users location
         LatLng user = new LatLng(loc[0], loc[1]);
         Marker userMarker = mMap.addMarker(new MarkerOptions().position(user).title("User Marker"));
+        userMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
         Log.d("USERMARKER", "USER MARKER TITLE: " + userMarker.getTitle());
     }
 
@@ -488,103 +473,6 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
             addMarkers(requested);
 
 
-//        //adding a marker to cla
-//        LatLng cla = new LatLng(30.2849, -97.7355);
-//        buildingsLatLngs.put(getResources().getString(R.string.cla), cla);
-//        Marker claMarker = mMap.addMarker(new MarkerOptions().position(cla).title(getResources().getString(R.string.cla)));
-//        info_set.put(claMarker, new String[]{getResources().getString(R.string.cla), getResources().getString(R.string.claHours)});
-//        // HEY. To see what the hour format means, go to parseHourse method. (Monday FIRST!)
-//
-//
-//        //adding a marker to gregory gym
-//        LatLng gregoryGym = new LatLng(30.2842, -97.7365);
-//        buildingsLatLngs.put("Gregory Gymnasium", gregoryGym);
-//        Marker gregoryMarker = mMap.addMarker(new MarkerOptions().position(gregoryGym).title("Gregory Gym"));
-//        info_set.put(gregoryMarker, new String[]{"Gregory Gymnasium", "0601060106010601062208221001"});
-
-//        //adding a marker to pcl library
-//        LatLng pcl = new LatLng(30.2827, -97.7381);
-//        buildingsLatLngs.put("Perry Castaneda Library (PCL)", pcl);
-//        Marker pclMarker = mMap.addMarker(new MarkerOptions().position(pcl).title("PCL"));
-//        info_set.put(pclMarker, new String[]{"Perry Castaneda Library (PCL)", "2424242424242424002310231124"});
-//
-//        //adding a marker to SAC
-//        LatLng sac = new LatLng(30.2849, -97.7360);
-//        buildingsLatLngs.put("Student Activity Center (SAC)", sac);
-//        Marker sacMarker = mMap.addMarker(new MarkerOptions().position(sac).title("SAC"));
-//        info_set.put(sacMarker, new String[]{"Student Activity Center (SAC)", "07170717071707170717cccccccc"});
-//
-//        //adding a marker to GDC
-//        LatLng gdc = new LatLng(30.28628, -97.73662);
-//        buildingsLatLngs.put("Gates Dell Complex (GDC)", gdc);
-//        Marker gdcMarker = mMap.addMarker(new MarkerOptions().position(gdc).title("GDC"));
-//        info_set.put(gdcMarker, new String[]{"Gates Dell Complex (GDC)", "2424242424242424242424242424"});
-//
-//        //adding a marker to UT Tower
-//        LatLng mai = new LatLng(30.286096, -97.73938);
-//        buildingsLatLngs.put("Main Building (MAI)", mai);
-//        Marker maiMarker = mMap.addMarker(new MarkerOptions().position(mai).title("0722072207220722072207220722"));
-//        info_set.put(maiMarker, new String[]{"Main Building (MAI)", "2424242424242424242424242424"});
-//
-//        //adding a marker to Jackson Geological Sciences Building
-//        LatLng jgb = new LatLng(30.285821, -97.735745);
-//        buildingsLatLngs.put("Jackson Geological Sciences Building (JGB)", jgb);
-//        Marker jgbMarker = mMap.addMarker(new MarkerOptions().position(jgb).title("JGB"));
-//        info_set.put(jgbMarker, new String[]{"Jackson Geological Sciences Building (JGB)", "08220822082208220818cccc1422"});
-//
-//        //adding a marker to Robert A. Welch Hall
-//        LatLng wel = new LatLng(30.286696, -97.737692);
-//        buildingsLatLngs.put("Robert A Welch Hall (WEL)", wel);
-//        Marker welMarker = mMap.addMarker(new MarkerOptions().position(wel).title("WEL"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
-//        info_set.put(welMarker, new String[]{"Robert A Welch Hall (WEL)", "08220822082208220818cccc1422"});
-//
-//        //adding a marker to Flawn Academic Center
-//        LatLng fac = new LatLng(30.286281, -97.740313);
-//        buildingsLatLngs.put("Flawn Academic Hall (FAC)", fac);
-//        Marker facMarker = mMap.addMarker(new MarkerOptions().position(fac).title("FAC"));
-//        info_set.put(facMarker, new String[]{"Flawn Academic Hall (FAC)", "2424242424242424002210220022"});
-//
-//        //adding a marker to Jack S. Blanton Museum of Art
-//        LatLng bma = new LatLng(30.281014, -97.737473);
-//        buildingsLatLngs.put("Jack S Blanton Museum of Art (BMA)", bma);
-//        Marker bmaMarker = mMap.addMarker(new MarkerOptions().position(bma).title("BMA"));
-//        info_set.put(bmaMarker, new String[]{"Jack S Blanton Museum of Art (BMA)", "cccc101710171017101711171317"});
-//
-//        //adding a marker to Harry Ransom Center
-//        LatLng hrc = new LatLng(30.281014, -97.737473);
-//        buildingsLatLngs.put("Harry Ransom Center (HRC)", hrc);
-//        Marker hrcMarker = mMap.addMarker(new MarkerOptions().position(hrc).title("HRC"));
-//        info_set.put(hrcMarker, new String[]{"Harry Ransom Center (HRC)", "1017101710171019101712171217"});
-//
-//        //adding a marker to Jester City Limits
-//        LatLng jcl = new LatLng(30.282806, -97.736771);
-//        buildingsLatLngs.put("Jester City Limits (JCL)", jcl);
-//        Marker jclMarker = mMap.addMarker(new MarkerOptions().position(jcl).title("JCL"));
-//        info_set.put(jclMarker, new String[]{"Jester City Limits (JCL)", "0723072307230723072109200923"});
-//
-//        //adding a marker to South Mall
-//        LatLng sou = new LatLng(30.284373, -97.739572);
-//        buildingsLatLngs.put("South Mall (SOU)", sou);
-//        Marker souMarker = mMap.addMarker(new MarkerOptions().position(sou).title("SOU"));
-//        info_set.put(souMarker, new String[]{"South Mall (SOU)", "2424242424242424242424242424"});
-//
-//        //adding a marker to Waggener Hall
-//        LatLng wag = new LatLng(30.284995, -97.737630);
-//        buildingsLatLngs.put("Waggener Hall (WAG)", wag);
-//        Marker wagMarker = mMap.addMarker(new MarkerOptions().position(wag).title("WAG"));
-//        info_set.put(wagMarker, new String[]{"Waggener Hall (WAG)", "08170817081708170817cccccccc"});
-
-//        if (!lastBuilding.equals("default")) {
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(buildingsLatLngs.get(lastBuilding)));
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(buildingsLatLngs.get(lastBuilding), 17));
-//        } else {
-//            mMap.moveCamera(CameraUpdateFactory.newLatLng(wel));
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(wel, 17));
-//        }
-
-
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -606,6 +494,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                 Date currDate = new Date();
                                 Date repDate = rep.getTimeOfEntry();
                                 if (currDate.getHours() - repDate.getHours() > 1 || currDate.getDay() != repDate.getDay()) {
+                                    Log.d("IFHOURS","IN IF HOURS DELETE");
                                     child2.getRef().removeValue();
                                 } else
                                     reportList.add(rep);
@@ -620,6 +509,7 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                         }
                         Log.d("RLIST", "name:" + child.getKey() + reportList.toString());
                         if (reportList.size() == 0) {
+                            Log.d("REPORTSIZE","IN reportlist size zero DELETE");
                             child.getRef().removeValue();
                         } else {
                             int finalavg = (total) / (reportList.size());
@@ -808,21 +698,21 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 //                                                            startActivity(intent2);
 //                                                            finish();
                                                             lastBuilding = name;
-                                                            mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                                                       if(child.getValue().equals(name))
-                                                                           child.getRef().removeValue();
-                                                                    }
-                                                                }
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
-                                                                    // Getting Post failed, log a message
-                                                                    Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
-                                                                    // ...
-                                                                }
-                                                            });
+//                                                            mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                                @Override
+//                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+//                                                                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+//                                                                       if(child.getValue().equals(name))
+//                                                                           child.getRef().removeValue();
+//                                                                    }
+//                                                                }
+//                                                                @Override
+//                                                                public void onCancelled(DatabaseError databaseError) {
+//                                                                    // Getting Post failed, log a message
+//                                                                    Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+//                                                                    // ...
+//                                                                }
+//                                                            });
                                                             loadMap();
 
 
@@ -835,6 +725,23 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             // ...
                                                         }
                                                     });
+                                                    mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if(child.getValue().equals(name))
+                                                                    child.getRef().removeValue();
+                                                            }
+                                                            loadMap();
+                                                        }
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            // Getting Post failed, log a message
+                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                            // ...
+                                                        }
+                                                    });
+
                                                 }
                                                 if (which == 1) {
                                                     final String selectedLvl = getLvlFromNum(which + 1);
@@ -875,6 +782,22 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
                                                         }
 
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            // Getting Post failed, log a message
+                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                            // ...
+                                                        }
+                                                    });
+                                                    mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if(child.getValue().equals(name))
+                                                                    child.getRef().removeValue();
+                                                            }
+                                                            loadMap();
+                                                        }
                                                         @Override
                                                         public void onCancelled(DatabaseError databaseError) {
                                                             // Getting Post failed, log a message
@@ -929,6 +852,22 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             // ...
                                                         }
                                                     });
+                                                    mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if(child.getValue().equals(name))
+                                                                    child.getRef().removeValue();
+                                                            }
+                                                            loadMap();
+                                                        }
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            // Getting Post failed, log a message
+                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                            // ...
+                                                        }
+                                                    });
                                                 }
                                                 if (which == 3) {
                                                     final String selectedLvl = getLvlFromNum(which + 1);
@@ -976,6 +915,22 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
                                                             // ...
                                                         }
                                                     });
+                                                    mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if(child.getValue().equals(name))
+                                                                    child.getRef().removeValue();
+                                                            }
+                                                            loadMap();
+                                                        }
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            // Getting Post failed, log a message
+                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                            // ...
+                                                        }
+                                                    });
                                                 }
                                                 if (which == 4) {
                                                     final String selectedLvl = getLvlFromNum(which + 1);
@@ -1016,6 +971,22 @@ public class HomeScreenMapsActivity extends AppCompatActivity implements OnMapRe
 
                                                         }
 
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+                                                            // Getting Post failed, log a message
+                                                            Log.w("CANCELTAG", "loadPost:onCancelled", databaseError.toException());
+                                                            // ...
+                                                        }
+                                                    });
+                                                    mDatabase.child("request").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                                                if(child.getValue().equals(name))
+                                                                    child.getRef().removeValue();
+                                                            }
+                                                            loadMap();
+                                                        }
                                                         @Override
                                                         public void onCancelled(DatabaseError databaseError) {
                                                             // Getting Post failed, log a message

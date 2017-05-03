@@ -86,5 +86,6 @@
     <!--30.285715, -97.734422, WIN-->
     <string name="win">F.L. Winship Drama Bldg. (WIN)</string>
     <string name="winHours">07170717071707170717cccccccc</string>
+    <string name="refresh">Refresh</string>
 
 </resources>
