@@ -8,21 +8,31 @@ As of now, since the users of the app are sparse, so there isn’t too much info
 
 Screenshots:
 
+Instructions on how to use the app.
+
 <p align="center">
-  <img src="https://github.com/naveen16/WhereDeyAtDoe/blob/master/img/Screenshot_20181001-214505.png" width="350" title="hover text">
+  <img src="https://github.com/naveen16/WhereDeyAtDoe/blob/master/img/Screenshot_20181001-214346.png" width="350" title="hover text">
 </p>
+
+Home page is google maps screen. Markers denote buildings on the campus. Markers that are green represent someone has requested a report on that building.
 
 <p align="center">
   <img src="https://github.com/naveen16/WhereDeyAtDoe/blob/master/img/Screenshot_20181001-214505.png" width="350" title="hover text">
 </p>
+
+Details of the building selected.
 
 <p align="center">
   <img src="https://github.com/naveen16/WhereDeyAtDoe/blob/master/img/Screenshot_20181001-214540.png" width="350" title="hover text">
 </p>
 
+Heatmap shows that building is moderately crowded.
+
 <p align="center">
   <img src="https://github.com/naveen16/WhereDeyAtDoe/blob/master/img/Screenshot_20181001-214611.png" width="350" title="hover text">
 </p>
+
+Heatmaps showing different types of crowd at the locations. More red means more crowded, more green means less crowded.
 
 <p align="center">
   <img src="https://github.com/naveen16/WhereDeyAtDoe/blob/master/img/Screenshot_20181001-214655.png" width="350" title="hover text">
